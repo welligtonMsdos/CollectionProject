@@ -1,0 +1,18 @@
+﻿services:
+  auth-10-service:    
+    container_name: collection-10-service
+    build:
+      context: .
+      dockerfile: Dockerfile   
+    ports:
+      - "5012:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development     
+    volumes:
+      - ./dataprotection-keys:/home/app/.aspnet/DataProtection-Keys  
+    networks:
+      - tom-auth-net
+      
+networks:
+  tom-auth-net:
+    external: true
