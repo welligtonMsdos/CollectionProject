@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Collection10Api.src.Application.Dtos.Show;
-using Collection10Api.src.Application.Dtos.Vinil;
+using Collection10Api.src.Application.Dtos.Vinyl;
 using Collection10Api.src.Domain.Entities;
 using System.Globalization;
 
@@ -10,9 +10,9 @@ public class CollectionProfile : Profile
 {
     public CollectionProfile()
     {
-        CreateMap<Vinyl, VinilDto>().ReverseMap();
-        CreateMap<Vinyl, VinilCreateDto>().ReverseMap();
-        CreateMap<Vinyl, VinilUpdateDto>().ReverseMap();
+        CreateMap<Vinyl, VinylDto>().ReverseMap();
+        CreateMap<Vinyl, VinylCreateDto>().ReverseMap();
+        CreateMap<Vinyl, VinylUpdateDto>().ReverseMap();
 
         CreateMap<Show, ShowDto>()
             .ConstructUsing(src => new ShowDto(

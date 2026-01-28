@@ -4,18 +4,18 @@ using Npgsql;
 using System.Data;
 using static Dapper.SqlMapper;
 
-namespace Collection10Api.src.Infrastructure.Repositories.Vinils;
+namespace Collection10Api.src.Infrastructure.Repositories.VinylRepo;
 
-public class VinilDapperRepository : IVinilDapperRepository
+public class VinylDapperRepository : IVinylDapperRepository
 {    
     private readonly IDbConnection _connection;
 
-    public VinilDapperRepository(IConfiguration config)
+    public VinylDapperRepository(IConfiguration config)
     {       
         _connection = new NpgsqlConnection(config.GetConnectionString("CollectionConnection"));
     }
 
-    public async Task<ICollection<Vinyl>> GetAllVinilsAsync()
+    public async Task<ICollection<Vinyl>> GetAllVinylsAsync()
     {
         var query = @"SELECT ""Id"", ""Artist"", ""Album"", ""Year"",""Photo"",""Price""
                       FROM ""Vinil""
@@ -27,7 +27,7 @@ public class VinilDapperRepository : IVinilDapperRepository
         return result.ToList();
     }
 
-    public async Task<Vinyl> GetVinilByIdAsync(int id)
+    public async Task<Vinyl> GetVinylByIdAsync(int id)
     {
         var query = @"SELECT ""Id"", ""Artist"", ""Album"", ""Year"",""Photo"",""Price""
                       FROM ""Vinil""
@@ -37,6 +37,6 @@ public class VinilDapperRepository : IVinilDapperRepository
 
         var result = await _connection.QueryFirstOrDefaultAsync<Vinyl>(query, new {Id = id});
 
-        return result ?? new Vinyl();
+        return result ?? throw new KeyNotFoundException($"Vinyl with ID {id} not found.");
     }
 }

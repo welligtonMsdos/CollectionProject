@@ -1,11 +1,11 @@
-﻿using Collection10Api.src.Application.Dtos.Vinil;
+﻿using Collection10Api.src.Application.Dtos.Vinyl;
 using FluentValidation;
 
-namespace Collection10Api.src.Application.Validators.Vinil;
+namespace Collection10Api.src.Application.Validators.Vinyl;
 
-public class VinilCreateValidator : AbstractValidator<VinilCreateDto>
+public class VinylCreateValidator : AbstractValidator<VinylCreateDto>
 {
-    public VinilCreateValidator()
+    public VinylCreateValidator()
     {
         RuleFor(x => x.Artist)
           .NotEmpty().WithMessage("Artist is required")

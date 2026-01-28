@@ -1,6 +1,6 @@
-﻿namespace Collection10Api.src.Application.Dtos.Vinil;
+﻿namespace Collection10Api.src.Application.Dtos.Vinyl;
 
-public record VinilUpdateDto(int Id,
+public record VinylUpdateDto(int Id,
                              string Artist,
                              string Album,
                              int Year,

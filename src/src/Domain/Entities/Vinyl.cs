@@ -3,8 +3,8 @@
 public class Vinyl
 {
     public int Id { get; set; }
-    public string Artist { get; set; }
-    public string Album { get; set; }
+    public required string Artist { get; set; }
+    public required string Album { get; set; }
     public int Year { get; set; }
     public string Photo { get; set; }
     public decimal Price { get; set; }

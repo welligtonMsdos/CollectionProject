@@ -10,12 +10,12 @@ public class CollectionContext: DbContext
     {
     }
 
-    public DbSet<Vinyl> vinils { get; set; }
+    public DbSet<Vinyl> vinyls { get; set; }
     public DbSet<Show> shows { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new VinilMap());
+        modelBuilder.ApplyConfiguration(new VinylMap());
         modelBuilder.ApplyConfiguration(new ShowMap());
     }
 }
