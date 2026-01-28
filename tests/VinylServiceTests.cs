@@ -15,7 +15,7 @@ public class VinylServiceTests
 {
     private readonly Mock<IVinylDapperRepository> _dapperRepositoy;
     private readonly Mock<IVinylEFRepository> _efRepository;    
-    private readonly VinilService _service;
+    private readonly VinylService _service;
     private readonly IValidator<VinylCreateDto> _validator;
 
     public VinylServiceTests()
@@ -33,7 +33,7 @@ public class VinylServiceTests
 
         var mapper = mapperConfig.CreateMapper();
 
-        _service = new VinilService(_dapperRepositoy.Object, 
+        _service = new VinylService(_dapperRepositoy.Object, 
                                     _efRepository.Object, 
                                     mapper, 
                                     validator);

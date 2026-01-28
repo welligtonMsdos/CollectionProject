@@ -9,6 +9,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # Mapeia a Secret do GitHub para uma variável de ambiente do sistema
+      JwtSettings__Key: ${{ secrets.TOKEN_KEY }}
 
     steps:
     - uses: actions/checkout@v4

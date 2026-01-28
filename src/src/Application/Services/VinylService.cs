@@ -8,14 +8,14 @@ using FluentValidation;
 
 namespace Collection10Api.src.Application.Services;
 
-public class VinilService : IVinylService
+public class VinylService : IVinylService
 {
     private readonly IVinylDapperRepository _repository;
     private readonly IVinylEFRepository _efRepository;
     private readonly IMapper _mapper;
     private readonly VinylCreateValidator _validator;
 
-    public VinilService(IVinylDapperRepository repository,
+    public VinylService(IVinylDapperRepository repository,
                         IVinylEFRepository efRepository,
                         IMapper mapper,
                         VinylCreateValidator validator)
