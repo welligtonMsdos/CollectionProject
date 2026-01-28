@@ -4,7 +4,6 @@ using Collection10Api.src.Infrastructure.Data.Context;
 using Collection10Api.src.Infrastructure.Filters;
 using Collection10Api.src.Infrastructure.Middleware;
 using Collection10Api.src.Infrastructure.Repositories;
-using Collection10Api.src.Infrastructure.Utils;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +36,7 @@ builder.Services.AddControllers(options =>
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-var secret = await Util.GetSecretWithCacheAsync();
+var secret = Environment.GetEnvironmentVariable("JwtSettings__Key");
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
