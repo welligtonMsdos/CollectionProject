@@ -1,0 +1,30 @@
+name: .NET Core CI
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET 10
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Restore dependencies
+      # O ponto (.) indica a raiz. O comando busca o .slnx automaticamente.
+      run: dotnet restore ./Collection10Api.slnx
+
+    - name: Build
+      run: dotnet build ./Collection10Api.slnx --configuration Release
+
+    - name: Test
+      # Aqui ele vai ler a solução e encontrar a pasta Collection10.Tests
+      run: dotnet test ./Collection10Api.slnx --configuration Release --verbosity normal
