@@ -10,9 +10,9 @@ public class CollectionProfile : Profile
 {
     public CollectionProfile()
     {
-        CreateMap<Vinil, VinilDto>().ReverseMap();
-        CreateMap<Vinil, VinilCreateDto>().ReverseMap();
-        CreateMap<Vinil, VinilUpdateDto>().ReverseMap();
+        CreateMap<Vinyl, VinilDto>().ReverseMap();
+        CreateMap<Vinyl, VinilCreateDto>().ReverseMap();
+        CreateMap<Vinyl, VinilUpdateDto>().ReverseMap();
 
         CreateMap<Show, ShowDto>()
             .ConstructUsing(src => new ShowDto(

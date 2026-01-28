@@ -4,7 +4,7 @@ namespace Collection10Api.src.Infrastructure.Repositories.Vinils;
 
 public interface IVinilDapperRepository: IRepository
 {
-    Task<ICollection<Vinil>> GetAllVinilsAsync();
+    Task<ICollection<Vinyl>> GetAllVinilsAsync();
 
-    Task<Vinil> GetVinilByIdAsync(int id);
+    Task<Vinyl> GetVinilByIdAsync(int id);
 }

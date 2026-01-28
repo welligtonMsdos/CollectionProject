@@ -5,9 +5,9 @@ namespace Collection10Api.src.Infrastructure.Repositories.Vinils;
 
 public interface IVinilEFRepository : IRepository
 {
-    Task<Vinil> CreateVinilAsync(Vinil vinil);
+    Task<Vinyl> CreateVinilAsync(Vinyl vinil);
 
-    Task<Vinil> UpdateVinilAsync(Vinil vinil);
+    Task<Vinyl> UpdateVinilAsync(Vinyl vinil);
 
-    Task<bool> DeleteVinilAsync(Vinil vinil);
+    Task<bool> DeleteVinilAsync(Vinyl vinil);
 }
