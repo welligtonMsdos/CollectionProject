@@ -1,11 +1,11 @@
-﻿using Collection10Api.src.Application.Dtos.Vinil;
+﻿using Collection10Api.src.Application.Dtos.Vinyl;
 using FluentValidation;
 
 namespace Collection10Api.src.Application.Validators.Vinil;
 
-public class VinilUpdateValidator : AbstractValidator<VinilUpdateDto>
+public class VinylUpdateValidator : AbstractValidator<VinylUpdateDto>
 {
-    public VinilUpdateValidator()
+    public VinylUpdateValidator()
     {
         RuleFor(x => x.Id)
             .NotEmpty()

@@ -1,5 +1,5 @@
 ﻿using Collection10Api.src.Application.Common;
-using Collection10Api.src.Application.Dtos.Vinil;
+using Collection10Api.src.Application.Dtos.Vinyl;
 using Collection10Api.src.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,65 +10,65 @@ namespace Collection10Api.src.Presentation.Controllers;
 [Route("api/[controller]")]
 public class VinilController : Controller
 {
-    private readonly IVinilService _service;
+    private readonly IVinylService _service;
     
-    public VinilController(IVinilService service)
+    public VinilController(IVinylService service)
     {
         _service = service;
     }
 
     [Authorize]
     [HttpPost("[Action]")]
-    public async Task<IActionResult> CreateVinil([FromBody] VinilCreateDto vinilCreateDto)
+    public async Task<IActionResult> CreateVinil([FromBody] VinylCreateDto vinylCreateDto)
     {
         // O ValidationFilter já validou o DTO aqui
-        var result = await _service.CreateVinilAsync(vinilCreateDto);
+        var result = await _service.CreateVinylAsync(vinylCreateDto);
 
-        return CreatedAtAction(nameof(GetVinilById), new { id = result.Id }, Result<VinilDto>.Ok(result, "Vinil criado com sucesso!"));
+        return CreatedAtAction(nameof(GetVinylById), new { id = result.Id }, Result<VinylDto>.Ok(result, "Vinyl successfully created!"));
     }
 
     [Authorize]
     [HttpGet("[Action]")]
-    public async Task<IActionResult> GetAllVinis()
+    public async Task<IActionResult> GetAllVinyls()
     {
-        var vinis = await _service.GetAllVinilsAsync();
+        var vinyls = await _service.GetAllVinylsAsync();
 
-        return Ok(Result<IEnumerable<VinilDto>>.Ok(vinis));
+        return Ok(Result<IEnumerable<VinylDto>>.Ok(vinyls));
     }
 
     [Authorize]
     [HttpGet("[Action]/{id}")]
-    public async Task<IActionResult> GetVinilById(int id)
+    public async Task<IActionResult> GetVinylById(int id)
     {
-        var vinil = await _service.GetVinilByIdAsync(id);
+        var vinyl = await _service.GetVinylByIdAsync(id);
 
-        if (vinil == null)
-            return NotFound(Result<object>.Failure(null, "Vinil não encontrado."));
+        if (vinyl == null)
+            return NotFound(Result<object>.Failure(null, "Vinyl not found."));
 
-        return Ok(Result<VinilDto>.Ok(vinil));
+        return Ok(Result<VinylDto>.Ok(vinyl));
     }
 
     [Authorize]
     [HttpPut("[Action]")]
-    public async Task<IActionResult> UpdateVinil([FromBody] VinilUpdateDto vinilUpdateDto)
+    public async Task<IActionResult> UpdateVinil([FromBody] VinylUpdateDto vinylUpdateDto)
     {
-        var updatedVinil = await _service.UpdateVinilAsync(vinilUpdateDto);
+        var updatedVinyl = await _service.UpdateVinylAsync(vinylUpdateDto);
 
-        if (updatedVinil == null)
-            return NotFound(Result<object>.Failure(null, "Vinil não encontrado para atualização."));
+        if (updatedVinyl == null)
+            return NotFound(Result<object>.Failure(null, "Vinyl not found for update."));
 
-        return Ok(Result<VinilDto>.Ok(updatedVinil, "Vinil atualizado com sucesso!"));
+        return Ok(Result<VinylDto>.Ok(updatedVinyl, "Vinyl successfully updated!"));
     }
 
     [Authorize]
     [HttpDelete("[Action]/{id}")]
-    public async Task<IActionResult> DeleteVinil(int id)
+    public async Task<IActionResult> DeleteVinyl(int id)
     {
-        var deleted = await _service.DeleteVinilAsync(id);
+        var deletedVinyl = await _service.DeleteVinylAsync(id);
 
-        if (!deleted)
-            return NotFound(Result<object>.Failure(null, "Vinil não encontrado para exclusão."));
+        if (!deletedVinyl)
+            return NotFound(Result<object>.Failure(null, "Vinyl not found for deletion."));
 
-        return Ok(Result<bool>.Ok(true, "Vinil removido com sucesso!"));
+        return Ok(Result<bool>.Ok(true, "Vinyl removed successfully!"));
     }
 }

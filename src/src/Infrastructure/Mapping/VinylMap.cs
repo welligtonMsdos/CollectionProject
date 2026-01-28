@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Collection10Api.src.Infrastructure.Mapping;
 
-public class VinilMap : IEntityTypeConfiguration<Vinyl>
+public class VinylMap : IEntityTypeConfiguration<Vinyl>
 {
     public void Configure(EntityTypeBuilder<Vinyl> builder)
     {

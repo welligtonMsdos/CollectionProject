@@ -1,6 +1,6 @@
-﻿namespace Collection10Api.src.Application.Dtos.Vinil;
+﻿namespace Collection10Api.src.Application.Dtos.Vinyl;
 
-public record VinilCreateDto(string Artist,
+public record VinylCreateDto(string Artist,
                              string Album,
                              int Year,
                              string Photo,

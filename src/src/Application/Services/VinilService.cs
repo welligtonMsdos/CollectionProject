@@ -1,24 +1,24 @@
 ﻿using AutoMapper;
-using Collection10Api.src.Application.Dtos.Vinil;
+using Collection10Api.src.Application.Dtos.Vinyl;
 using Collection10Api.src.Application.Interfaces;
-using Collection10Api.src.Application.Validators.Vinil;
+using Collection10Api.src.Application.Validators.Vinyl;
 using Collection10Api.src.Domain.Entities;
-using Collection10Api.src.Infrastructure.Repositories.Vinils;
+using Collection10Api.src.Infrastructure.Repositories.VinylRepo;
 using FluentValidation;
 
 namespace Collection10Api.src.Application.Services;
 
-public class VinilService : IVinilService
+public class VinilService : IVinylService
 {
-    private readonly IVinilDapperRepository _repository;
-    private readonly IVinilEFRepository _efRepository;
+    private readonly IVinylDapperRepository _repository;
+    private readonly IVinylEFRepository _efRepository;
     private readonly IMapper _mapper;
-    private readonly VinilCreateValidator _validator;
+    private readonly VinylCreateValidator _validator;
 
-    public VinilService(IVinilDapperRepository repository,
-                        IVinilEFRepository efRepository,
+    public VinilService(IVinylDapperRepository repository,
+                        IVinylEFRepository efRepository,
                         IMapper mapper,
-                        VinilCreateValidator validator)
+                        VinylCreateValidator validator)
     {
         _repository = repository;
         _efRepository = efRepository;
@@ -26,44 +26,44 @@ public class VinilService : IVinilService
         _validator = validator;
     }
 
-    public async Task<VinilDto> CreateVinilAsync(VinilCreateDto vinilCreateDto)
+    public async Task<VinylDto> CreateVinylAsync(VinylCreateDto vinylCreateDto)
     {
-        await _validator.ValidateAndThrowAsync(vinilCreateDto);
+        await _validator.ValidateAndThrowAsync(vinylCreateDto);
 
-        var vinilEntity = _mapper.Map<Vinyl>(vinilCreateDto);        
+        var vinylEntity = _mapper.Map<Vinyl>(vinylCreateDto);        
 
-        vinilEntity.Active = true;
+        vinylEntity.Active = true;
 
-        var createdVinil = await _efRepository.CreateVinilAsync(vinilEntity);
+        var createdVinyl = await _efRepository.CreateVinylAsync(vinylEntity);
 
-        return _mapper.Map<VinilDto>(createdVinil);
+        return _mapper.Map<VinylDto>(createdVinyl);
     }   
 
-    public async Task<ICollection<VinilDto>> GetAllVinilsAsync()
+    public async Task<ICollection<VinylDto>> GetAllVinylsAsync()
     {
-        return _mapper.Map<ICollection<VinilDto>>(await _repository.GetAllVinilsAsync());
+        return _mapper.Map<ICollection<VinylDto>>(await _repository.GetAllVinylsAsync());
     }
 
-    public async Task<VinilDto> GetVinilByIdAsync(int id)
+    public async Task<VinylDto> GetVinylByIdAsync(int id)
     {
-        return _mapper.Map<VinilDto>(await _repository.GetVinilByIdAsync(id));
+        return _mapper.Map<VinylDto>(await _repository.GetVinylByIdAsync(id));
     }
 
-    public async Task<VinilDto> UpdateVinilAsync(VinilUpdateDto vinilUpdateDto)
+    public async Task<VinylDto> UpdateVinylAsync(VinylUpdateDto vinylUpdateDto)
     {
-        var vinilEntity = _mapper.Map<Vinyl>(vinilUpdateDto);
+        var vinylEntity = _mapper.Map<Vinyl>(vinylUpdateDto);
 
-        vinilEntity.Active = true;
+        vinylEntity.Active = true;
 
-        var updateVinil = await _efRepository.UpdateVinilAsync(vinilEntity);
+        var updateVinyl = await _efRepository.UpdateVinylAsync(vinylEntity);
 
-        return _mapper.Map<VinilDto>(updateVinil);
+        return _mapper.Map<VinylDto>(updateVinyl);
     }
 
-    public async Task<bool> DeleteVinilAsync(int id)
+    public async Task<bool> DeleteVinylAsync(int id)
     {
-        var vinilEntity = await _repository.GetVinilByIdAsync(id);
+        var vinylEntity = await _repository.GetVinylByIdAsync(id);
 
-        return await _efRepository.DeleteVinilAsync(vinilEntity);
+        return await _efRepository.DeleteVinylAsync(vinylEntity);
     }
 }

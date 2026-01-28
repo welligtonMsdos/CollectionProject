@@ -1,5 +1,5 @@
 using Collection10Api.src.Application.Interfaces;
-using Collection10Api.src.Application.Validators.Vinil;
+using Collection10Api.src.Application.Validators.Vinyl;
 using Collection10Api.src.Infrastructure.Data.Context;
 using Collection10Api.src.Infrastructure.Filters;
 using Collection10Api.src.Infrastructure.Middleware;
@@ -27,7 +27,7 @@ builder.Services.AddCors(options =>
 
 // Add services to the container.
 
-builder.Services.AddValidatorsFromAssemblyContaining<VinilCreateValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<VinylCreateValidator>();
 
 builder.Services.AddControllers(options =>
 {

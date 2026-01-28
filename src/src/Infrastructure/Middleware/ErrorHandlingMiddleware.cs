@@ -9,7 +9,8 @@ public class ErrorHandlingMiddleware
     private readonly RequestDelegate _next;
     private readonly ILogger<ErrorHandlingMiddleware> _logger;
 
-    public ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger)
+    public ErrorHandlingMiddleware(RequestDelegate next, 
+                                   ILogger<ErrorHandlingMiddleware> logger)
     {
         _next = next;
         _logger = logger;
@@ -23,16 +24,17 @@ public class ErrorHandlingMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro Crítico");
+            _logger.LogError(ex, "Critical Error");
 
             context.Response.ContentType = "application/json";
+
             context.Response.StatusCode = 500;
 
             var response = new Result<object>
             {
                 Success = false,
-                Message = "Ocorreu um erro interno no servidor.",
-                Errors = ex.Message // Em produção, oculte o ex.Message
+                Message = "Internal Server Error.",
+                Errors = ex.Message 
             };
 
             await context.Response.WriteAsync(JsonSerializer.Serialize(response));
@@ -42,7 +44,7 @@ public class ErrorHandlingMiddleware
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         var code = HttpStatusCode.InternalServerError;
-        var result = JsonSerializer.Serialize(new { error = "Ocorreu um erro interno no servidor. Tente novamente mais tarde." });
+        var result = JsonSerializer.Serialize(new { error = "An internal error occurred. Please try again later." });
 
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)code;
