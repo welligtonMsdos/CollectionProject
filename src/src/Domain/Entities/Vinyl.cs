@@ -1,6 +1,6 @@
 ﻿namespace Collection10Api.src.Domain.Entities;
 
-public class Vinil
+public class Vinyl
 {
     public int Id { get; set; }
     public string Artist { get; set; }

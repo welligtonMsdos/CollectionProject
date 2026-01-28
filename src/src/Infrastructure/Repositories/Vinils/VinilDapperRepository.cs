@@ -15,19 +15,19 @@ public class VinilDapperRepository : IVinilDapperRepository
         _connection = new NpgsqlConnection(config.GetConnectionString("CollectionConnection"));
     }
 
-    public async Task<ICollection<Vinil>> GetAllVinilsAsync()
+    public async Task<ICollection<Vinyl>> GetAllVinilsAsync()
     {
         var query = @"SELECT ""Id"", ""Artist"", ""Album"", ""Year"",""Photo"",""Price""
                       FROM ""Vinil""
                       WHERE ""Active"" = TRUE
                       ORDER BY ""Year""";
 
-        var result = await _connection.QueryAsync<Vinil> (query);
+        var result = await _connection.QueryAsync<Vinyl> (query);
 
         return result.ToList();
     }
 
-    public async Task<Vinil> GetVinilByIdAsync(int id)
+    public async Task<Vinyl> GetVinilByIdAsync(int id)
     {
         var query = @"SELECT ""Id"", ""Artist"", ""Album"", ""Year"",""Photo"",""Price""
                       FROM ""Vinil""
@@ -35,8 +35,8 @@ public class VinilDapperRepository : IVinilDapperRepository
                             ""Id"" = @Id
                       ORDER BY ""Year""";
 
-        var result = await _connection.QueryFirstOrDefaultAsync<Vinil>(query, new {Id = id});
+        var result = await _connection.QueryFirstOrDefaultAsync<Vinyl>(query, new {Id = id});
 
-        return result ?? new Vinil();
+        return result ?? new Vinyl();
     }
 }

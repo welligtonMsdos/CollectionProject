@@ -10,7 +10,7 @@ public class CollectionContext: DbContext
     {
     }
 
-    public DbSet<Vinil> vinils { get; set; }
+    public DbSet<Vinyl> vinils { get; set; }
     public DbSet<Show> shows { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

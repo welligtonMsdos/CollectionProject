@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Collection10Api.src.Infrastructure.Mapping;
 
-public class VinilMap : IEntityTypeConfiguration<Vinil>
+public class VinilMap : IEntityTypeConfiguration<Vinyl>
 {
-    public void Configure(EntityTypeBuilder<Vinil> builder)
+    public void Configure(EntityTypeBuilder<Vinyl> builder)
     {
-        builder.ToTable(nameof(Vinil));
+        builder.ToTable(nameof(Vinyl));
 
         builder.HasKey(v => v.Id);
 
