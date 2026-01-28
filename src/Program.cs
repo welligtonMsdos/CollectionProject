@@ -38,6 +38,12 @@ builder.Services.AddOpenApi();
 
 var secret = Environment.GetEnvironmentVariable("JwtSettings__Key");
 
+if (string.IsNullOrEmpty(secret) || secret.Length < 32)
+{
+    // Lança um erro claro para você ver no log do Docker
+    throw new InvalidOperationException("A chave JWT está ausente ou é curta demais (mínimo 32 caracteres).");
+}
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
