@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Text;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
@@ -30,7 +31,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<VinylCreateValidator>();
 
 builder.Services.AddControllers(options =>
 {
-    options.Filters.Add<ValidationFilter>();
+    options.Filters.Add<ValidationFilter>();   
 });
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -39,9 +40,8 @@ builder.Services.AddOpenApi();
 var secret = Environment.GetEnvironmentVariable("JwtSettings__Key");
 
 if (string.IsNullOrEmpty(secret) || secret.Length < 32)
-{
-    // Lança um erro claro para você ver no log do Docker
-    throw new InvalidOperationException("A chave JWT está ausente ou é curta demais (mínimo 32 caracteres).");
+{   
+    throw new InvalidOperationException("JWT key is missing or too short (minimum 32 characters).");
 }
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
