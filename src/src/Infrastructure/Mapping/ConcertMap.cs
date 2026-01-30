@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Collection10Api.src.Infrastructure.Mapping;
 
-public class ShowMap : IEntityTypeConfiguration<Show>
+public class ConcertMap : IEntityTypeConfiguration<Concert>
 {
-    public void Configure(EntityTypeBuilder<Show> builder)
+    public void Configure(EntityTypeBuilder<Concert> builder)
     {
-        builder.ToTable(nameof(Show));
+        builder.ToTable(nameof(Concert));
 
         builder.HasKey(s => s.Guid);
 

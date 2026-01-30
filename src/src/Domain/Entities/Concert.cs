@@ -1,6 +1,6 @@
 ﻿namespace Collection10Api.src.Domain.Entities;
 
-public class Show
+public class Concert
 {
     public Guid Guid { get; set; }
     public string Artist { get; set; }

@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 .env
 .env.txt
+/src/src/Presentation/Controllers/VinylController.cs

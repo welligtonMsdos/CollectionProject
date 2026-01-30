@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Collection10Api.src.Application.Dtos.Show;
+using Collection10Api.src.Application.Dtos.Concert;
 using Collection10Api.src.Application.Dtos.Vinyl;
 using Collection10Api.src.Domain.Entities;
 using System.Globalization;
@@ -14,8 +14,8 @@ public class CollectionProfile : Profile
         CreateMap<Vinyl, VinylCreateDto>().ReverseMap();
         CreateMap<Vinyl, VinylUpdateDto>().ReverseMap();
 
-        CreateMap<Show, ShowDto>()
-            .ConstructUsing(src => new ShowDto(
+        CreateMap<Concert, ConcertDto>()
+            .ConstructUsing(src => new ConcertDto(
                             src.Guid,
                             src.Artist,
                             src.Venue,
@@ -26,7 +26,7 @@ public class CollectionProfile : Profile
                             src.Photo
             ));
 
-        CreateMap<Show, ShowCreateDto>().ReverseMap();
-        CreateMap<Show, ShowUpdateDto>().ReverseMap();
+        CreateMap<Concert, ConcertCreateDto>().ReverseMap();
+        CreateMap<Concert, ConcertUpdateDto>().ReverseMap();
     }
 }

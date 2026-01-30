@@ -11,11 +11,11 @@ public class CollectionContext: DbContext
     }
 
     public DbSet<Vinyl> vinyls { get; set; }
-    public DbSet<Show> shows { get; set; }
+    public DbSet<Concert> concerts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new VinylMap());
-        modelBuilder.ApplyConfiguration(new ShowMap());
+        modelBuilder.ApplyConfiguration(new ConcertMap());
     }
 }
