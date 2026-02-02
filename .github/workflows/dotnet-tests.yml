@@ -8,10 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    env:
-      # Mapeia a Secret do GitHub para uma variável de ambiente do sistema
-      JwtSettings__Key: ${{ secrets.TOKEN_KEY }}
+    runs-on: ubuntu-latest    
 
     steps:
     - uses: actions/checkout@v4
@@ -21,6 +18,13 @@ jobs:
       with:
         dotnet-version: '10.0.x' # Verifique se seu projeto é 9 ou 10
 
+    - name: Docker Run (Teste de Integração)
+      run: |
+        docker-compose up -d
+      env:
+        # Garante que o Docker Compose 'enxergue' a variável do sistema
+        JwtSettings__Key: ${{ secrets.TOKEN_KEY }}
+        
     - name: Restore dependencies
       # Boa prática: Usar caminhos sem o ./ inicial se estiver na raiz, mas ./src está correto
       run: dotnet restore src/Collection10Api.slnx

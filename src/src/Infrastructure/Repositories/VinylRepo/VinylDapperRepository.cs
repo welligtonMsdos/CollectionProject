@@ -18,7 +18,7 @@ public class VinylDapperRepository : IVinylDapperRepository
     public async Task<ICollection<Vinyl>> GetAllVinylsAsync()
     {
         var query = @"SELECT ""Id"", ""Artist"", ""Album"", ""Year"",""Photo"",""Price""
-                      FROM ""Vinil""
+                      FROM ""Vinyl""
                       WHERE ""Active"" = TRUE
                       ORDER BY ""Year""";
 
@@ -30,7 +30,7 @@ public class VinylDapperRepository : IVinylDapperRepository
     public async Task<Vinyl> GetVinylByIdAsync(int id)
     {
         var query = @"SELECT ""Id"", ""Artist"", ""Album"", ""Year"",""Photo"",""Price""
-                      FROM ""Vinil""
+                      FROM ""Vinyl""
                       WHERE ""Active"" = TRUE AND
                             ""Id"" = @Id
                       ORDER BY ""Year""";
