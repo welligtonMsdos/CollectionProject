@@ -2,7 +2,7 @@
 
 public class Vinyl
 {
-    public int Id { get; set; }
+    public Guid Guid { get; set; }
     public required string Artist { get; set; }
     public required string Album { get; set; }
     public int Year { get; set; }

@@ -2,7 +2,7 @@ name: .NET Core CI
 
 on:
   push:
-    branches: [ "**" ] # Ou mantenha ["**"] se quiser em todas
+    branches: [ "**" ] 
   pull_request:
     branches: [ "main" ]
 
@@ -16,17 +16,15 @@ jobs:
     - name: Setup .NET10
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '10.0.x' # Verifique se seu projeto é 9 ou 10
+        dotnet-version: '10.0.x' 
 
     - name: Docker Run (Teste de Integração)
       run: |
         docker-compose up -d
-      env:
-        # Garante que o Docker Compose 'enxergue' a variável do sistema
+      env:        
         JwtSettings__Key: ${{ secrets.TOKEN_KEY }}
         
-    - name: Restore dependencies
-      # Boa prática: Usar caminhos sem o ./ inicial se estiver na raiz, mas ./src está correto
+    - name: Restore dependencies      
       run: dotnet restore src/Collection10Api.slnx
 
     - name: Build

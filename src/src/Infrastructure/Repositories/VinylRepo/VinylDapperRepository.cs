@@ -1,42 +1,18 @@
 ﻿using Collection10Api.src.Domain.Entities;
-using Dapper;
-using Npgsql;
-using System.Data;
-using static Dapper.SqlMapper;
 
 namespace Collection10Api.src.Infrastructure.Repositories.VinylRepo;
 
-public class VinylDapperRepository : IVinylDapperRepository
-{    
-    private readonly IDbConnection _connection;
+public class VinylDapperRepository : BaseRepository, IVinylDapperRepository
+{   
+    public VinylDapperRepository(IConfiguration config): base(config) { }
 
-    public VinylDapperRepository(IConfiguration config)
-    {       
-        _connection = new NpgsqlConnection(config.GetConnectionString("CollectionConnection"));
+    public async Task<IEnumerable<Vinyl>> GetAllAsync()
+    {
+        return await GetAllAsync<Vinyl>();
     }
 
-    public async Task<ICollection<Vinyl>> GetAllVinylsAsync()
+    public async Task<Vinyl?> GetByGuidAsync(Guid guid)
     {
-        var query = @"SELECT ""Id"", ""Artist"", ""Album"", ""Year"",""Photo"",""Price""
-                      FROM ""Vinyl""
-                      WHERE ""Active"" = TRUE
-                      ORDER BY ""Year""";
-
-        var result = await _connection.QueryAsync<Vinyl> (query);
-
-        return result.ToList();
-    }
-
-    public async Task<Vinyl> GetVinylByIdAsync(int id)
-    {
-        var query = @"SELECT ""Id"", ""Artist"", ""Album"", ""Year"",""Photo"",""Price""
-                      FROM ""Vinyl""
-                      WHERE ""Active"" = TRUE AND
-                            ""Id"" = @Id
-                      ORDER BY ""Year""";
-
-        var result = await _connection.QueryFirstOrDefaultAsync<Vinyl>(query, new {Id = id});
-
-        return result ?? throw new KeyNotFoundException($"Vinyl with ID {id} not found.");
+        return await GetByIdAsync<Vinyl>(guid);
     }
 }

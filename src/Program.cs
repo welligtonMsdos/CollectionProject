@@ -1,4 +1,3 @@
-using Collection10Api.src.Application.Interfaces;
 using Collection10Api.src.Application.Validators.Vinyl;
 using Collection10Api.src.Infrastructure.Data.Context;
 using Collection10Api.src.Infrastructure.Filters;
@@ -8,7 +7,9 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Npgsql;
 using Scalar.AspNetCore;
+using System.Data;
 using System.Text;
 
 
@@ -66,20 +67,14 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var connectionString = builder.Configuration.GetConnectionString("CollectionConnection");
 
+if (string.IsNullOrEmpty(connectionString))
+    throw new InvalidOperationException("Connection string 'CollectionConnection' is missing in configuration.");
+
 builder.Services.AddDbContext<CollectionContext>(options => options.UseNpgsql(connectionString));
 
-builder.Services.Scan(scan =>
-{
-    scan.FromAssemblyOf<IService>()
-    .AddClasses(c => c.AssignableTo<IService>())
-    .AsImplementedInterfaces()
-    .WithScopedLifetime();
+builder.Services.AddScoped<IDbConnection>(_ => new NpgsqlConnection(connectionString));
 
-    scan.FromAssemblyOf<IRepository>()
-    .AddClasses(c => c.AssignableTo<IRepository>())
-    .AsImplementedInterfaces()
-    .WithScopedLifetime();
-});
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 
