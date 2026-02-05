@@ -10,7 +10,7 @@ public class VinylMap : IEntityTypeConfiguration<Vinyl>
     {
         builder.ToTable(nameof(Vinyl));
 
-        builder.HasKey(v => v.Id);
+        builder.HasKey(v => v.Guid);
 
         builder.Property(v => v.Artist)
             .IsRequired()

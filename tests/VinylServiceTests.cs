@@ -49,10 +49,10 @@ public class VinylServiceTests
                                      "https://example.com/thewall.jpg",
                                      200);
 
-        await _service.CreateVinylAsync(dto);
+        await _service.CreateAsync(dto);
 
         _efRepository.Verify(
-            r => r.CreateVinylAsync(It.Is<Vinyl>(v =>
+            r => r.CreateAsync(It.Is<Vinyl>(v =>
                 v.Artist == dto.Artist &&
                 v.Album == dto.Album &&
                 v.Year == dto.Year &&
@@ -82,9 +82,9 @@ public class VinylServiceTests
                                      photo, 
                                      price);
       
-        await Assert.ThrowsAsync<ValidationException>(() => _service.CreateVinylAsync(dto));
+        await Assert.ThrowsAsync<ValidationException>(() => _service.CreateAsync(dto));
 
-        _efRepository.Verify(r => r.CreateVinylAsync(It.IsAny<Vinyl>()), Times.Never);
+        _efRepository.Verify(r => r.CreateAsync(It.IsAny<Vinyl>()), Times.Never);
     }
 
     [Fact]
@@ -92,14 +92,14 @@ public class VinylServiceTests
     {
         var vinyls = new List<VinylDto>
         {
-            new VinylDto(1, "Pink Floyd", "The Wall", 1979, "https://example.com/thewall.jpg", 200),
-            new VinylDto(2, "The Beatles", "Abbey Road", 1969, "https://example.com/abbeyroad.jpg", 150)
+            new VinylDto(Guid.NewGuid(), "Pink Floyd", "The Wall", 1979, "https://example.com/thewall.jpg", 200),
+            new VinylDto(Guid.NewGuid(), "The Beatles", "Abbey Road", 1969, "https://example.com/abbeyroad.jpg", 150)
         };
 
-        _dapperRepositoy.Setup(r => r.GetAllVinylsAsync())
+        _dapperRepositoy.Setup(r => r.GetAllAsync())
                         .ReturnsAsync(vinyls.Select(v => new Vinyl
                         {
-                            Id = v.Id,
+                            Guid = v.Guid,
                             Artist = v.Artist,
                             Album = v.Album,
                             Year = v.Year,
@@ -107,27 +107,27 @@ public class VinylServiceTests
                             Price = v.Price
                         }).ToList());
 
-        var result = await _service.GetAllVinylsAsync();
+        var result = await _service.GetAllAsync();
 
         result.Should().BeEquivalentTo(vinyls);
 
-        _dapperRepositoy.Verify(r => r.GetAllVinylsAsync(), Times.Once);
+        _dapperRepositoy.Verify(r => r.GetAllAsync(), Times.Once);
     }
 
     [Fact]
     public async Task GetVinylByIdAsync_ShouldReturnVinyl()
     {
-        var vinyl = new VinylDto(1,
+        var vinyl = new VinylDto(Guid.NewGuid(),
                                  "Pink Floyd",
                                  "The Wall",
                                  1979,
                                  "https://example.com/thewall.jpg",
                                  200);
 
-        _dapperRepositoy.Setup(r => r.GetVinylByIdAsync(vinyl.Id))
+        _dapperRepositoy.Setup(r => r.GetByGuidAsync(vinyl.Guid))
                         .ReturnsAsync(new Vinyl
                         {
-                            Id = vinyl.Id,
+                            Guid = vinyl.Guid,
                             Artist = vinyl.Artist,
                             Album = vinyl.Album,
                             Year = vinyl.Year,
@@ -135,22 +135,22 @@ public class VinylServiceTests
                             Price = vinyl.Price
                         });
 
-        var result = await _service.GetVinylByIdAsync(vinyl.Id);
+        var result = await _service.GetByGuidAsync(vinyl.Guid);
 
         result.Should().BeEquivalentTo(vinyl);
 
-        _dapperRepositoy.Verify(r => r.GetVinylByIdAsync(vinyl.Id), Times.Once);
+        _dapperRepositoy.Verify(r => r.GetByGuidAsync(vinyl.Guid), Times.Once);
     }
 
     [Fact]
     public async Task DeleteVinylAsync_ShouldDeleteVinyl()
     {
-        var vinilId = 1;
+        var vinilId = Guid.NewGuid();
 
-        _dapperRepositoy.Setup(r => r.GetVinylByIdAsync(vinilId))
+        _dapperRepositoy.Setup(r => r.GetByGuidAsync(vinilId))
                         .ReturnsAsync(new Vinyl
                         {
-                            Id = vinilId,
+                            Guid = vinilId,
                             Artist = "Pink Floyd",
                             Album = "The Wall",
                             Year = 1979,
@@ -158,33 +158,33 @@ public class VinylServiceTests
                             Price = 200
                         });
 
-        _efRepository.Setup(r => r.DeleteVinylAsync(It.IsAny<Vinyl>()))
+        _efRepository.Setup(r => r.DeleteAsync(It.IsAny<Vinyl>()))
                      .ReturnsAsync(true);
 
-        var result = await _service.DeleteVinylAsync(vinilId);
+        var result = await _service.DeleteAsync(vinilId);
 
         result.Should().BeTrue();
 
-        _dapperRepositoy.Verify(r => r.GetVinylByIdAsync(vinilId), Times.Once);
+        _dapperRepositoy.Verify(r => r.GetByGuidAsync(vinilId), Times.Once);
 
-        _efRepository.Verify(r => r.DeleteVinylAsync(It.IsAny<Vinyl>()), Times.Once);
+        _efRepository.Verify(r => r.DeleteAsync(It.IsAny<Vinyl>()), Times.Once);
     }
 
     [Fact]
     public async Task UpdateVinylAsync_ShouldUpdateVinyl()
     {
-        var dto = new VinylUpdateDto(1,
+        var dto = new VinylUpdateDto(Guid.NewGuid(),
                                      "Pink Floyd",
                                      "The Wall",
                                      1979,
                                      "https://example.com/thewall.jpg",
                                      250);
 
-        await _service.UpdateVinylAsync(dto);
+        await _service.UpdateAsync(dto);
 
         _efRepository.Verify(
-            r => r.UpdateVinylAsync(It.Is<Vinyl>(v =>
-                v.Id == dto.Id &&
+            r => r.UpdateAsync(It.Is<Vinyl>(v =>
+                v.Guid == dto.Guid &&
                 v.Artist == dto.Artist &&
                 v.Album == dto.Album &&
                 v.Year == dto.Year &&

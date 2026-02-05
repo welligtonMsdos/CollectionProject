@@ -2,19 +2,13 @@
 
 namespace Collection10Api.src.Application.Interfaces;
 
-public interface IConcertService : IService
+public interface IConcertService : IService<ConcertDto>
 {
-    Task<ICollection<ConcertDto>> GetAllConcertsAsync();
-
     Task<ICollection<ConcertDto>> GetAllConcertsUpcomingAsync();
 
     Task<ICollection<ConcertDto>> GetAllConcertsPastAsync();
 
-    Task<ConcertDto> GetConcertByGuidAsync(Guid guid);
+    Task<ConcertDto> CreateAsync(ConcertCreateDto dto);
 
-    Task<ConcertDto> CreateConcertAsync(ConcertCreateDto concertCreateDto);
-
-    Task<ConcertDto> UpdateConcertAsync(ConcertUpdateDto concertUpdateDto);
-
-    Task<bool> DeleteConcertAsync(Guid guid);
+    Task<ConcertDto> UpdateAsync(ConcertUpdateDto dto);
 }

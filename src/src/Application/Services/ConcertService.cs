@@ -29,24 +29,24 @@ public class ConcertService : IConcertService
         _validatorUpdate = validatorUpdate;
     }
 
-    public async Task<ConcertDto> CreateConcertAsync(ConcertCreateDto concertCreateDto)
+    public async Task<ConcertDto> CreateAsync(ConcertCreateDto dto)
     {
-        await _validatorCreate.ValidateAndThrowAsync(concertCreateDto);
+        await _validatorCreate.ValidateAndThrowAsync(dto);
 
-        var concert = _mapper.Map<Concert>(concertCreateDto);
+        var concert = _mapper.Map<Concert>(dto);
 
         concert.Guid = Guid.NewGuid();
 
         concert.Active = true;
 
-        var createdConcert = await _efRepository.CreateConcertAsync(concert);
+        var createdConcert = await _efRepository.CreateAsync(concert);
 
         return _mapper.Map<ConcertDto>(createdConcert);
     }
 
-    public async Task<ICollection<ConcertDto>> GetAllConcertsAsync()
+    public async Task<ICollection<ConcertDto>> GetAllAsync()
     {
-        return _mapper.Map<ICollection<ConcertDto>>(await _repository.GetAllConcertsAsync());
+        return _mapper.Map<ICollection<ConcertDto>>(await _repository.GetAllAsync());
     }
 
     public async Task<ICollection<ConcertDto>> GetAllConcertsUpcomingAsync()
@@ -59,28 +59,28 @@ public class ConcertService : IConcertService
         return _mapper.Map<ICollection<ConcertDto>>(await _repository.GetAllConcertsPastAsync());
     }
 
-    public async Task<ConcertDto> GetConcertByGuidAsync(Guid guid)
+    public async Task<ConcertDto> GetByGuidAsync(Guid guid)
     {
-        return _mapper.Map<ConcertDto>(await _repository.GetConcertByGuidAsync(guid));
+        return _mapper.Map<ConcertDto>(await _repository.GetByGuidAsync(guid));
     }
 
-    public async Task<ConcertDto> UpdateConcertAsync(ConcertUpdateDto concertUpdateDto)
+    public async Task<ConcertDto> UpdateAsync(ConcertUpdateDto dto)
     {
-        await _validatorUpdate.ValidateAndThrowAsync(concertUpdateDto);
+        await _validatorUpdate.ValidateAndThrowAsync(dto);
 
-        var concert = _mapper.Map<Concert>(concertUpdateDto);
+        var concert = _mapper.Map<Concert>(dto);
 
         concert.Active = true;
 
-        var updatedConcert = await _efRepository.UpdateConcertAsync(concert);
+        var updatedConcert = await _efRepository.UpdateAsync(concert);
 
         return _mapper.Map<ConcertDto>(updatedConcert);
     }
 
-    public async Task<bool> DeleteConcertAsync(Guid guid)
+    public async Task<bool> DeleteAsync(Guid guid)
     {
-        var concert = await _repository.GetConcertByGuidAsync(guid);
+        var concert = await _repository.GetByGuidAsync(guid);
 
-        return await _efRepository.DeleteConcertAsync(concert);
+        return await _efRepository.DeleteAsync(concert);
     }    
 }

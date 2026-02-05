@@ -26,44 +26,44 @@ public class VinylService : IVinylService
         _validator = validator;
     }
 
-    public async Task<VinylDto> CreateVinylAsync(VinylCreateDto vinylCreateDto)
+    public async Task<VinylDto> CreateAsync(VinylCreateDto dto)
     {
-        await _validator.ValidateAndThrowAsync(vinylCreateDto);
+        await _validator.ValidateAndThrowAsync(dto);
 
-        var vinylEntity = _mapper.Map<Vinyl>(vinylCreateDto);        
+        var vinylEntity = _mapper.Map<Vinyl>(dto);        
 
         vinylEntity.Active = true;
 
-        var createdVinyl = await _efRepository.CreateVinylAsync(vinylEntity);
+        var createdVinyl = await _efRepository.CreateAsync(vinylEntity);
 
         return _mapper.Map<VinylDto>(createdVinyl);
     }   
 
-    public async Task<ICollection<VinylDto>> GetAllVinylsAsync()
+    public async Task<ICollection<VinylDto>> GetAllAsync()
     {
-        return _mapper.Map<ICollection<VinylDto>>(await _repository.GetAllVinylsAsync());
+        return _mapper.Map<ICollection<VinylDto>>(await _repository.GetAllAsync());
     }
 
-    public async Task<VinylDto> GetVinylByIdAsync(int id)
+    public async Task<VinylDto> GetByGuidAsync(Guid guid)
     {
-        return _mapper.Map<VinylDto>(await _repository.GetVinylByIdAsync(id));
+        return _mapper.Map<VinylDto>(await _repository.GetByGuidAsync(guid));
     }
 
-    public async Task<VinylDto> UpdateVinylAsync(VinylUpdateDto vinylUpdateDto)
+    public async Task<VinylDto> UpdateAsync(VinylUpdateDto dto)
     {
-        var vinylEntity = _mapper.Map<Vinyl>(vinylUpdateDto);
+        var vinylEntity = _mapper.Map<Vinyl>(dto);
 
         vinylEntity.Active = true;
 
-        var updateVinyl = await _efRepository.UpdateVinylAsync(vinylEntity);
+        var updateVinyl = await _efRepository.UpdateAsync(vinylEntity);
 
         return _mapper.Map<VinylDto>(updateVinyl);
     }
 
-    public async Task<bool> DeleteVinylAsync(int id)
+    public async Task<bool> DeleteAsync(Guid guid)
     {
-        var vinylEntity = await _repository.GetVinylByIdAsync(id);
+        var vinylEntity = await _repository.GetByGuidAsync(guid);
 
-        return await _efRepository.DeleteVinylAsync(vinylEntity);
+        return await _efRepository.DeleteAsync(vinylEntity);
     }
 }

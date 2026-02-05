@@ -2,13 +2,9 @@
 
 namespace Collection10Api.src.Infrastructure.Repositories.ConcertRepo;
 
-public interface IConcertDapperRepository : IRepository
-{
-    Task<ICollection<Concert>> GetAllConcertsAsync();
-
+public interface IConcertDapperRepository : IDapperRepository<Concert>
+{    
     Task<ICollection<Concert>> GetAllConcertsUpcomingAsync();
 
     Task<ICollection<Concert>> GetAllConcertsPastAsync();
-
-    Task<Concert> GetConcertByGuidAsync(Guid guid);
 }

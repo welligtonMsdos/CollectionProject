@@ -21,7 +21,7 @@ public class ConcertController : Controller
     [HttpPost("[Action]")]  
     public async Task<IActionResult> CreateConcert([FromBody] ConcertCreateDto concertCreateDto)
     {       
-        var result = await _service.CreateConcertAsync(concertCreateDto);
+        var result = await _service.CreateAsync(concertCreateDto);
 
         return CreatedAtAction(nameof(GetConcertByGuid), 
                new { guid = result.Guid }, 
@@ -33,7 +33,7 @@ public class ConcertController : Controller
     [HttpGet("[Action]")]
     public async Task<IActionResult> GetAllConcerts()
     {
-        var concerts = await _service.GetAllConcertsAsync();
+        var concerts = await _service.GetAllAsync();
 
         return Ok(Result<IEnumerable<ConcertDto>>.Ok(concerts));
     }
@@ -60,7 +60,7 @@ public class ConcertController : Controller
     [HttpGet("[Action]/{guid}")]
     public async Task<IActionResult> GetConcertByGuid(Guid guid)
     {
-        var concert = await _service.GetConcertByGuidAsync(guid);
+        var concert = await _service.GetByGuidAsync(guid);
 
         if (concert == null)
             return NotFound(Result<object>.Failure("Concert not found."));
@@ -72,7 +72,7 @@ public class ConcertController : Controller
     [HttpPut("[Action]")]
     public async Task<IActionResult> UpdateConcert([FromBody] ConcertUpdateDto concertUpdateDto)
     {
-        var updatedConcert = await _service.UpdateConcertAsync(concertUpdateDto);
+        var updatedConcert = await _service.UpdateAsync(concertUpdateDto);
 
         if (updatedConcert == null)
             return NotFound(Result<object>.Failure("Concert not found for update."));
@@ -84,7 +84,7 @@ public class ConcertController : Controller
     [HttpDelete("[Action]/{guid}")]
     public async Task<IActionResult> DeleteConcert(Guid guid)
     {
-        var deletedConcert = await _service.DeleteConcertAsync(guid);
+        var deletedConcert = await _service.DeleteAsync(guid);
 
         if (!deletedConcert)
             return NotFound(Result<object>.Failure("Concert not found for deletion."));

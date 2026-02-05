@@ -11,30 +11,31 @@ public class ConcertEFRepository : IConcertEFRepository
     {
         _context = context;
     }
-    public async Task<Concert> CreateConcertAsync(Concert concert)
+
+    public async Task<Concert> CreateAsync(Concert obj)
     {
-        await _context.concerts.AddAsync(concert);
+        await _context.concerts.AddAsync(obj);
 
         await _context.SaveChangesAsync();
 
-        return concert;
+        return obj;
     }
 
-    public async Task<bool> DeleteConcertAsync(Concert concert)
+    public async Task<bool> DeleteAsync(Concert obj)
     {
-        _context.concerts.Remove(concert);
+        _context.concerts.Remove(obj);
 
         var deleted = await _context.SaveChangesAsync();
 
         return deleted > 0;
-    }
+    }   
 
-    public async Task<Concert> UpdateConcertAsync(Concert concert)
+    public async Task<Concert> UpdateAsync(Concert obj)
     {
-        _context.concerts.Update(concert);
+        _context.concerts.Update(obj);
 
         await _context.SaveChangesAsync();
 
-        return concert;
+        return obj;
     }
 }

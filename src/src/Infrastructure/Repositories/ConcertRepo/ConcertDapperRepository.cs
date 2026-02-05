@@ -1,30 +1,11 @@
 ﻿using Collection10Api.src.Domain.Entities;
 using Dapper;
-using Npgsql;
-using System.Data;
 
 namespace Collection10Api.src.Infrastructure.Repositories.ConcertRepo;
 
-public class ConcertDapperRepository : IConcertDapperRepository
+public class ConcertDapperRepository : BaseRepository, IConcertDapperRepository
 {
-    private readonly IDbConnection _connection;
-
-    public ConcertDapperRepository(IConfiguration config)
-    {
-        _connection = new NpgsqlConnection(config.GetConnectionString("CollectionConnection"));
-    }
-
-    public async Task<ICollection<Concert>> GetAllConcertsAsync()
-    {
-        var query = @"SELECT ""Guid"", ""Artist"", ""Venue"", ""ShowDate"",""Photo""
-                      FROM ""Concert""
-                      WHERE ""Active"" = TRUE
-                      ORDER BY ""ShowDate""";
-
-        var result = await _connection.QueryAsync<Concert>(query);
-
-        return result.ToList();
-    }   
+    public ConcertDapperRepository(IConfiguration config): base(config){}
 
     public async Task<ICollection<Concert>> GetAllConcertsUpcomingAsync()
     {
@@ -34,7 +15,9 @@ public class ConcertDapperRepository : IConcertDapperRepository
                             ""ShowDate"" >= NOW()
                       ORDER BY ""ShowDate"" ASC";
 
-        var result = await _connection.QueryAsync<Concert>(query);
+        using var connection = CreateConnection();
+
+        var result = await connection.QueryAsync<Concert>(query);
 
         return result.ToList();
     }
@@ -47,21 +30,20 @@ public class ConcertDapperRepository : IConcertDapperRepository
                             ""ShowDate"" < NOW()
                       ORDER BY ""ShowDate"" DESC";
 
-        var result = await _connection.QueryAsync<Concert>(query);
+        using var connection = CreateConnection();
+
+        var result = await connection.QueryAsync<Concert>(query);
 
         return result.ToList();
+    }    
+
+    public async Task<Concert?> GetByGuidAsync(Guid guid)
+    {
+        return await GetByIdAsync<Concert>(guid);
     }
 
-    public async Task<Concert> GetConcertByGuidAsync(Guid guid)
+    public async Task<IEnumerable<Concert>> GetAllAsync()
     {
-        var query = @"SELECT ""Guid"", ""Artist"", ""Venue"", ""ShowDate"",""Photo""
-                      FROM ""Concert""
-                      WHERE ""Active"" = TRUE AND
-                            ""Guid"" = @Guid
-                      ORDER BY ""ShowDate""";
-
-        var result = await _connection.QueryFirstOrDefaultAsync<Concert>(query, new { Guid = guid });
-
-        return result ?? new Concert();
+        return await GetAllAsync<Concert>();
     }
 }

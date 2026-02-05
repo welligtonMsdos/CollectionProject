@@ -2,14 +2,9 @@
 
 namespace Collection10Api.src.Application.Interfaces;
 
-public interface IVinylService: IService
+public interface IVinylService: IService<VinylDto>
 {
-    Task<ICollection<VinylDto>> GetAllVinylsAsync();
-    Task<VinylDto> GetVinylByIdAsync(int id);
+    Task<VinylDto> CreateAsync(VinylCreateDto dto);
 
-    Task<VinylDto> CreateVinylAsync(VinylCreateDto vinylCreateDto);
-
-    Task<VinylDto> UpdateVinylAsync(VinylUpdateDto vinylUpdateDto);
-
-    Task<bool> DeleteVinylAsync(int id);
+    Task<VinylDto> UpdateAsync(VinylUpdateDto dto);
 }
