@@ -64,6 +64,8 @@ public class VinylService : IVinylService
     {
         var vinylEntity = await _repository.GetByGuidAsync(guid);
 
+        if (vinylEntity == null) return false;        
+
         return await _efRepository.DeleteAsync(vinylEntity);
     }
 }

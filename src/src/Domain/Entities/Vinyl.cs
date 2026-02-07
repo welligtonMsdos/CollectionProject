@@ -6,7 +6,7 @@ public class Vinyl
     public required string Artist { get; set; }
     public required string Album { get; set; }
     public int Year { get; set; }
-    public string Photo { get; set; }
+    public required string Photo { get; set; }
     public decimal Price { get; set; }
     public bool Active { get; set; }
 }

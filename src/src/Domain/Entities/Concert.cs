@@ -3,9 +3,9 @@
 public class Concert
 {
     public Guid Guid { get; set; }
-    public string Artist { get; set; }
-    public string Venue { get; set; }
+    public required string Artist { get; set; }
+    public required string Venue { get; set; }
     public DateOnly ShowDate { get; set; }
-    public string Photo { get; set; }
+    public required string Photo { get; set; }
     public bool Active { get; set; }
 }
