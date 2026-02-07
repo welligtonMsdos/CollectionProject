@@ -7,58 +7,54 @@ using Microsoft.AspNetCore.Mvc;
 namespace Collection10Api.src.Presentation.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
-public class ConcertController : Controller
+public class ConcertsController : Controller
 {
     private readonly IConcertService _service;
 
-    public ConcertController(IConcertService service)
+    public ConcertsController(IConcertService service)
     {
         _service = service;
     }
-
-    [Authorize]
-    [HttpPost("[Action]")]  
-    public async Task<IActionResult> CreateConcert([FromBody] ConcertCreateDto concertCreateDto)
+   
+    [HttpPost]  
+    public async Task<IActionResult> Post([FromBody] ConcertCreateDto concertCreateDto)
     {       
         var result = await _service.CreateAsync(concertCreateDto);
 
-        return CreatedAtAction(nameof(GetConcertByGuid), 
+        return CreatedAtAction(nameof(GetByGuid), 
                new { guid = result.Guid }, 
                Result<ConcertDto>.Ok(result,
                                      "Concert successfully created!"));
     }
-
-    [Authorize]
-    [HttpGet("[Action]")]
-    public async Task<IActionResult> GetAllConcerts()
+    
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
     {
         var concerts = await _service.GetAllAsync();
 
         return Ok(Result<IEnumerable<ConcertDto>>.Ok(concerts));
     }
-
-    [Authorize]
-    [HttpGet("[Action]")]
-    public async Task<IActionResult> GetAllConcertsUpcomingAsync()
+    
+    [HttpGet("Upcomming")]
+    public async Task<IActionResult> GetAllUpcomingAsync()
     {
         var concerts = await _service.GetAllConcertsUpcomingAsync();
 
         return Ok(Result<IEnumerable<ConcertDto>>.Ok(concerts));
     }
-
-    [Authorize]
-    [HttpGet("[Action]")]
-    public async Task<IActionResult> GetAllConcertsPastAsync()
+   
+    [HttpGet("Past")]
+    public async Task<IActionResult> GetAllPastAsync()
     {
         var concerts = await _service.GetAllConcertsPastAsync();
 
         return Ok(Result<IEnumerable<ConcertDto>>.Ok(concerts));
     }
-
-    [Authorize]
-    [HttpGet("[Action]/{guid}")]
-    public async Task<IActionResult> GetConcertByGuid(Guid guid)
+   
+    [HttpGet("{guid:guid}")]
+    public async Task<IActionResult> GetByGuid(Guid guid)
     {
         var concert = await _service.GetByGuidAsync(guid);
 
@@ -67,10 +63,9 @@ public class ConcertController : Controller
 
         return Ok(Result<ConcertDto>.Ok(concert));
     }
-
-    [Authorize]
-    [HttpPut("[Action]")]
-    public async Task<IActionResult> UpdateConcert([FromBody] ConcertUpdateDto concertUpdateDto)
+   
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] ConcertUpdateDto concertUpdateDto)
     {
         var updatedConcert = await _service.UpdateAsync(concertUpdateDto);
 
@@ -79,9 +74,8 @@ public class ConcertController : Controller
 
         return Ok(Result<ConcertDto>.Ok(updatedConcert, "Concert successfully updated!"));
     }
-
-    [Authorize]
-    [HttpDelete("[Action]/{guid}")]
+    
+    [HttpDelete("{guid:guid}")]
     public async Task<IActionResult> DeleteConcert(Guid guid)
     {
         var deletedConcert = await _service.DeleteAsync(guid);
