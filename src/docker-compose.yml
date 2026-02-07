@@ -18,4 +18,4 @@
       
 networks:
   tom-auth-net:
-    external: true
+    driver: bridge
