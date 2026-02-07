@@ -19,12 +19,19 @@ jobs:
         dotnet-version: '10.0.x' 
 
     - name: Iniciar Serviços (Docker Compose)
-      # Define que o comando deve rodar onde está o docker-compose.yml
       working-directory: ./src
+      env:
+        # Mapeia as secrets para variáveis de ambiente temporárias do shell
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        TOKEN_KEY: ${{ secrets.TOKEN_KEY }}
+        # Adicione outras variáveis aqui se o seu projeto exigir (ex: MongoDB, RabbitMQ)
       run: |
+        # Cria o arquivo .env fisicamente dentro de ./src
+        echo "DATABASE_URL=$DATABASE_URL" > .env
+        echo "JwtSettings__Key=$TOKEN_KEY" >> .env
+        
+        # Agora o Docker Compose encontrará o arquivo que ele espera
         docker compose up -d
-      env:        
-        JwtSettings__Key: ${{ secrets.TOKEN_KEY }}
         
     - name: Restore dependencies      
       run: dotnet restore src/Collection10Api.slnx
@@ -39,4 +46,6 @@ jobs:
       # O "if: always()" garante que os containers parem mesmo se os testes falharem
       if: always()
       working-directory: ./src
-      run: docker compose down
+      run: |
+        # O Docker compose down também precisa do .env para validar o estado
+        docker compose down
