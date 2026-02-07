@@ -19,6 +19,8 @@ jobs:
         dotnet-version: '10.0.x' 
 
     - name: Iniciar Serviços (Docker Compose)
+      # Define que o comando deve rodar onde está o docker-compose.yml
+      working-directory: ./src
       run: |
         docker compose up -d
       env:        
@@ -34,5 +36,7 @@ jobs:
       run: dotnet test src/Collection10Api.slnx --configuration Release --no-build --verbosity normal
 
     - name: Stop Services
+      # O "if: always()" garante que os containers parem mesmo se os testes falharem
       if: always()
+      working-directory: ./src
       run: docker compose down
