@@ -13,16 +13,25 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Setup .NET10
+    - name: Setup .NET 10
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.0.x' 
 
-    - name: Docker Run (Teste de Integração)
+    - name: Iniciar Serviços (Docker Compose)
+      working-directory: ./src
+      env:
+        # Mapeia as secrets para variáveis de ambiente temporárias do shell
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        TOKEN_KEY: ${{ secrets.TOKEN_KEY }}
+        # Adicione outras variáveis aqui se o seu projeto exigir (ex: MongoDB, RabbitMQ)
       run: |
-        docker-compose up -d
-      env:        
-        JwtSettings__Key: ${{ secrets.TOKEN_KEY }}
+        # Cria o arquivo .env fisicamente dentro de ./src
+        echo "DATABASE_URL=$DATABASE_URL" > .env
+        echo "JwtSettings__Key=$TOKEN_KEY" >> .env
+        
+        # Agora o Docker Compose encontrará o arquivo que ele espera
+        docker compose up -d
         
     - name: Restore dependencies      
       run: dotnet restore src/Collection10Api.slnx
@@ -32,3 +41,11 @@ jobs:
 
     - name: Test
       run: dotnet test src/Collection10Api.slnx --configuration Release --no-build --verbosity normal
+
+    - name: Stop Services
+      # O "if: always()" garante que os containers parem mesmo se os testes falharem
+      if: always()
+      working-directory: ./src
+      run: |
+        # O Docker compose down também precisa do .env para validar o estado
+        docker compose down
