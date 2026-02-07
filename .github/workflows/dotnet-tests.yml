@@ -13,14 +13,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Setup .NET10
+    - name: Setup .NET 10
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.0.x' 
 
-    - name: Docker Run (Teste de Integração)
+    - name: Iniciar Serviços (Docker Compose)
       run: |
-        docker-compose up -d
+        docker compose up -d
       env:        
         JwtSettings__Key: ${{ secrets.TOKEN_KEY }}
         
@@ -32,3 +32,7 @@ jobs:
 
     - name: Test
       run: dotnet test src/Collection10Api.slnx --configuration Release --no-build --verbosity normal
+
+    - name: Stop Services
+      if: always()
+      run: docker compose down
