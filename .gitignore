@@ -362,6 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-.env
-.env.txt
-/src/src/Presentation/Controllers/VinylController.cs
+src/.env
+
