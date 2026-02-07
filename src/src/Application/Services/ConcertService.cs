@@ -81,6 +81,8 @@ public class ConcertService : IConcertService
     {
         var concert = await _repository.GetByGuidAsync(guid);
 
+        if (concert == null) return false;
+
         return await _efRepository.DeleteAsync(concert);
     }    
 }
