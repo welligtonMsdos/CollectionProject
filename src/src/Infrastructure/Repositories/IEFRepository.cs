@@ -2,9 +2,9 @@
 
 public interface IEFRepository<T>
 {
-    Task<T> CreateAsync(T obj);
+    Task<T> PostAsync(T obj);
 
-    Task<T> UpdateAsync(T obj);
+    Task<T> PutAsync(T obj);
 
     Task<bool> DeleteAsync(T obj);
 }

@@ -29,7 +29,8 @@ public class ConcertService : IConcertService
         _validatorUpdate = validatorUpdate;
     }
 
-    public async Task<ConcertDto> CreateAsync(ConcertCreateDto dto)
+    public async Task<ConcertDto> PostAsync(ConcertCreateDto dto, 
+                                            string email)
     {
         await _validatorCreate.ValidateAndThrowAsync(dto);
 
@@ -39,24 +40,26 @@ public class ConcertService : IConcertService
 
         concert.Active = true;
 
-        var createdConcert = await _efRepository.CreateAsync(concert);
+        concert.Email = email;
+
+        var createdConcert = await _efRepository.PostAsync(concert);
 
         return _mapper.Map<ConcertDto>(createdConcert);
     }
 
-    public async Task<ICollection<ConcertDto>> GetAllAsync()
+    public async Task<ICollection<ConcertDto>> GetAsync(string email)
     {
-        return _mapper.Map<ICollection<ConcertDto>>(await _repository.GetAllAsync());
+        return _mapper.Map<ICollection<ConcertDto>>(await _repository.GetAsync(email));
     }
 
-    public async Task<ICollection<ConcertDto>> GetAllConcertsUpcomingAsync()
+    public async Task<ICollection<ConcertDto>> GetUpcomingAsync(string email)
     {
-        return _mapper.Map<ICollection<ConcertDto>>(await _repository.GetAllConcertsUpcomingAsync());
+        return _mapper.Map<ICollection<ConcertDto>>(await _repository.GetUpcomingAsync(email));
     }
 
-    public async Task<ICollection<ConcertDto>> GetAllConcertsPastAsync()
+    public async Task<ICollection<ConcertDto>> GetPastAsync(string email)
     {
-        return _mapper.Map<ICollection<ConcertDto>>(await _repository.GetAllConcertsPastAsync());
+        return _mapper.Map<ICollection<ConcertDto>>(await _repository.GetPastAsync(email));
     }
 
     public async Task<ConcertDto> GetByGuidAsync(Guid guid)
@@ -64,15 +67,17 @@ public class ConcertService : IConcertService
         return _mapper.Map<ConcertDto>(await _repository.GetByGuidAsync(guid));
     }
 
-    public async Task<ConcertDto> UpdateAsync(ConcertUpdateDto dto)
+    public async Task<ConcertDto> PutAsync(ConcertUpdateDto dto, string email)
     {
         await _validatorUpdate.ValidateAndThrowAsync(dto);
 
         var concert = _mapper.Map<Concert>(dto);
 
-        concert.Active = true;
+        concert.Active = true;      
+        
+        concert.Email = email;
 
-        var updatedConcert = await _efRepository.UpdateAsync(concert);
+        var updatedConcert = await _efRepository.PutAsync(concert);
 
         return _mapper.Map<ConcertDto>(updatedConcert);
     }

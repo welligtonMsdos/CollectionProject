@@ -2,7 +2,7 @@
 
 public interface IService<T>
 {
-    Task<ICollection<T>> GetAllAsync();
+    Task<ICollection<T>> GetAsync(string email);
 
     Task<T> GetByGuidAsync(Guid guid);    
 

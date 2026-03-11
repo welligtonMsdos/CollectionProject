@@ -21,7 +21,7 @@ public class VinylsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] VinylCreateDto vinylCreateDto)
     {       
-        var result = await _service.CreateAsync(vinylCreateDto);
+        var result = await _service.PostAsync(vinylCreateDto);
 
         return CreatedAtAction(nameof(GetByGuid), 
                                new { guid = result.Guid }, 
@@ -29,9 +29,9 @@ public class VinylsController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> Get()
     {
-        var vinyls = await _service.GetAllAsync();
+        var vinyls = await _service.GetAsync("");
 
         return Ok(Result<IEnumerable<VinylDto>>.Ok(vinyls));
     }
@@ -50,7 +50,7 @@ public class VinylsController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Put([FromBody] VinylUpdateDto vinylUpdateDto)
     {
-        var updatedVinyl = await _service.UpdateAsync(vinylUpdateDto);
+        var updatedVinyl = await _service.PutAsync(vinylUpdateDto);
 
         if (updatedVinyl == null)
             return NotFound(Result<object>.Failure("Vinyl not found for update."));

@@ -26,7 +26,7 @@ public class VinylService : IVinylService
         _validator = validator;
     }
 
-    public async Task<VinylDto> CreateAsync(VinylCreateDto dto)
+    public async Task<VinylDto> PostAsync(VinylCreateDto dto)
     {
         await _validator.ValidateAndThrowAsync(dto);
 
@@ -34,14 +34,14 @@ public class VinylService : IVinylService
 
         vinylEntity.Active = true;
 
-        var createdVinyl = await _efRepository.CreateAsync(vinylEntity);
+        var createdVinyl = await _efRepository.PostAsync(vinylEntity);
 
         return _mapper.Map<VinylDto>(createdVinyl);
     }   
 
-    public async Task<ICollection<VinylDto>> GetAllAsync()
+    public async Task<ICollection<VinylDto>> GetAsync(string email)
     {
-        return _mapper.Map<ICollection<VinylDto>>(await _repository.GetAllAsync());
+        return _mapper.Map<ICollection<VinylDto>>(await _repository.GetAsync(email));
     }
 
     public async Task<VinylDto> GetByGuidAsync(Guid guid)
@@ -49,13 +49,13 @@ public class VinylService : IVinylService
         return _mapper.Map<VinylDto>(await _repository.GetByGuidAsync(guid));
     }
 
-    public async Task<VinylDto> UpdateAsync(VinylUpdateDto dto)
+    public async Task<VinylDto> PutAsync(VinylUpdateDto dto)
     {
         var vinylEntity = _mapper.Map<Vinyl>(dto);
 
         vinylEntity.Active = true;
 
-        var updateVinyl = await _efRepository.UpdateAsync(vinylEntity);
+        var updateVinyl = await _efRepository.PutAsync(vinylEntity);
 
         return _mapper.Map<VinylDto>(updateVinyl);
     }

@@ -27,6 +27,10 @@ public class ConcertMap : IEntityTypeConfiguration<Concert>
             .IsRequired()
             .HasMaxLength(255);
 
+        builder.Property(s => s.Email)  
+            .IsRequired()
+            .HasMaxLength(50);
+
         builder.HasQueryFilter(p => p.Active);
 
     }

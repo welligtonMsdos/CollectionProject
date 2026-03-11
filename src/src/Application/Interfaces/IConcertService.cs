@@ -4,11 +4,11 @@ namespace Collection10Api.src.Application.Interfaces;
 
 public interface IConcertService : IService<ConcertDto>
 {
-    Task<ICollection<ConcertDto>> GetAllConcertsUpcomingAsync();
+    Task<ICollection<ConcertDto>> GetUpcomingAsync(string email);
 
-    Task<ICollection<ConcertDto>> GetAllConcertsPastAsync();
+    Task<ICollection<ConcertDto>> GetPastAsync(string email);
 
-    Task<ConcertDto> CreateAsync(ConcertCreateDto dto);
+    Task<ConcertDto> PostAsync(ConcertCreateDto dto, string email);
 
-    Task<ConcertDto> UpdateAsync(ConcertUpdateDto dto);
+    Task<ConcertDto> PutAsync(ConcertUpdateDto dto, string email);
 }

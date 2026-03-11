@@ -15,13 +15,11 @@ public class ValidationFilter : IAsyncActionFilter
     }
 
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
-    {
-        // Pega o DTO que está sendo enviado no corpo da requisição
+    {        
         var dto = context.ActionArguments.Values.FirstOrDefault();
 
         if (dto != null)
-        {
-            // Tenta encontrar um validador registrado para esse tipo de DTO
+        {           
             var validatorType = typeof(IValidator<>).MakeGenericType(dto.GetType());
             var validator = _serviceProvider.GetService(validatorType) as IValidator;
 

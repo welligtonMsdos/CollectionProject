@@ -7,43 +7,59 @@ public class ConcertDapperRepository : BaseRepository, IConcertDapperRepository
 {
     public ConcertDapperRepository(IConfiguration config): base(config){}
 
-    public async Task<ICollection<Concert>> GetAllConcertsUpcomingAsync()
+    public async Task<ICollection<Concert>> GetUpcomingAsync(string email)
     {
         var query = @"SELECT ""Guid"", ""Artist"", ""Venue"", ""ShowDate"",""Photo""
                       FROM ""Concert""
                       WHERE ""Active"" = TRUE AND
-                            ""ShowDate"" >= NOW()
+                            ""ShowDate"" >= NOW() AND
+                            ""Email"" = @Email 
                       ORDER BY ""ShowDate"" ASC";
 
         using var connection = CreateConnection();
 
-        var result = await connection.QueryAsync<Concert>(query);
+        var result = await connection.QueryAsync<Concert>(query, new {Email = email});
 
         return result.ToList();
     }
 
-    public async Task<ICollection<Concert>> GetAllConcertsPastAsync()
+    public async Task<ICollection<Concert>> GetPastAsync(string email)
     {
         var query = @"SELECT ""Guid"", ""Artist"", ""Venue"", ""ShowDate"",""Photo""
                       FROM ""Concert""
                       WHERE ""Active"" = TRUE AND
-                            ""ShowDate"" < NOW()
+                            ""ShowDate"" < NOW() AND
+                            ""Email"" = @Email
                       ORDER BY ""ShowDate"" DESC";
 
         using var connection = CreateConnection();
 
-        var result = await connection.QueryAsync<Concert>(query);
+        var result = await connection.QueryAsync<Concert>(query, new {Email = email});
 
         return result.ToList();
     }    
 
     public async Task<Concert?> GetByGuidAsync(Guid guid)
     {
-        return await GetByIdAsync<Concert>(guid);
+        using var connection = CreateConnection();
+
+        var query = @"SELECT ""Guid"", ""Artist"", ""Venue"", ""ShowDate"",""Photo""
+                      FROM ""Concert""
+                      WHERE ""Active"" = TRUE AND
+                            ""Guid"" = @Guid";
+
+        return await connection.QueryFirstOrDefaultAsync<Concert>(query, new { Guid = guid });
     }
 
-    public async Task<IEnumerable<Concert>> GetAllAsync()
+    public async Task<IEnumerable<Concert>> GetAsync(string email)
     {
-        return await GetAllAsync<Concert>();
+        using var connection = CreateConnection();
+
+        var query = @"SELECT ""Guid"", ""Artist"", ""Venue"", ""ShowDate"",""Photo""
+                      FROM ""Concert""
+                      WHERE ""Active"" = TRUE AND
+                            ""Email"" = @Email";
+
+        return await connection.QueryAsync<Concert>(query , new { Email = email });
     }
 }
