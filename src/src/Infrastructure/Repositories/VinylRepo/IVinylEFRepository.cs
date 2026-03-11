@@ -1,5 +1,4 @@
-﻿
-using Collection10Api.src.Domain.Entities;
+﻿using Collection10Api.src.Domain.Entities;
 
 namespace Collection10Api.src.Infrastructure.Repositories.VinylRepo;
 

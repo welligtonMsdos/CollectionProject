@@ -19,14 +19,11 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder =>
     {
-        builder.WithOrigins("http://localhost:4200")
-        .AllowCredentials()
-        .AllowAnyHeader()
-        .AllowAnyMethod();
+        builder.AllowAnyOrigin() 
+               .AllowAnyHeader()
+               .AllowAnyMethod();
     });
 });
-
-// Add services to the container.
 
 builder.Services.AddValidatorsFromAssemblyContaining<VinylCreateValidator>();
 
@@ -35,7 +32,6 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<ValidationFilter>();   
 });
 
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 var secret = Environment.GetEnvironmentVariable("JwtSettings__Key");
@@ -55,6 +51,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
             ValidateIssuer = true,
+            //ValidIssuer = "http://13.59.37.186:5011",
             ValidIssuer = "http://localhost:5011",
             ValidateAudience = false,
             ValidateLifetime = true
@@ -80,9 +77,6 @@ var app = builder.Build();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
 app.MapOpenApi();
 
 app.MapScalarApiReference(options =>
@@ -98,7 +92,6 @@ app.MapScalarApiReference(options =>
                auth.Token = "your-bearer-token";
            });
 });
-//}
 
 app.UseCors("CorsPolicy");
 

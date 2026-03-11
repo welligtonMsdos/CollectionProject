@@ -3,5 +3,6 @@
 public record ConcertDto(Guid Guid,
                          string Artist,
                          string Venue,
+                         DateOnly ShowDate,
                          string ShowDateDescription,
                          string Photo) { };

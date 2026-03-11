@@ -12,7 +12,7 @@ public class ConcertEFRepository : IConcertEFRepository
         _context = context;
     }
 
-    public async Task<Concert> CreateAsync(Concert obj)
+    public async Task<Concert> PostAsync(Concert obj)
     {
         await _context.concerts.AddAsync(obj);
 
@@ -30,7 +30,7 @@ public class ConcertEFRepository : IConcertEFRepository
         return deleted > 0;
     }   
 
-    public async Task<Concert> UpdateAsync(Concert obj)
+    public async Task<Concert> PutAsync(Concert obj)
     {
         _context.concerts.Update(obj);
 

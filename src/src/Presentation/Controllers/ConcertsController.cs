@@ -3,6 +3,7 @@ using Collection10Api.src.Application.Dtos.Concert;
 using Collection10Api.src.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Collection10Api.src.Presentation.Controllers;
 
@@ -12,16 +13,19 @@ namespace Collection10Api.src.Presentation.Controllers;
 public class ConcertsController : Controller
 {
     private readonly IConcertService _service;
+    private string? userEmail;
 
     public ConcertsController(IConcertService service)
     {
-        _service = service;
+        _service = service;        
     }
    
     [HttpPost]  
     public async Task<IActionResult> Post([FromBody] ConcertCreateDto concertCreateDto)
-    {       
-        var result = await _service.CreateAsync(concertCreateDto);
+    {
+        userEmail = User.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty;
+
+        var result = await _service.PostAsync(concertCreateDto, userEmail);
 
         return CreatedAtAction(nameof(GetByGuid), 
                new { guid = result.Guid }, 
@@ -30,25 +34,31 @@ public class ConcertsController : Controller
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> Get()
     {
-        var concerts = await _service.GetAllAsync();
+        userEmail = User.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty;
+
+        var concerts = await _service.GetAsync(userEmail);
 
         return Ok(Result<IEnumerable<ConcertDto>>.Ok(concerts));
     }
     
-    [HttpGet("Upcomming")]
-    public async Task<IActionResult> GetAllUpcomingAsync()
+    [HttpGet("Upcoming")]
+    public async Task<IActionResult> GetUpcoming()
     {
-        var concerts = await _service.GetAllConcertsUpcomingAsync();
+        userEmail = User.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty;
+
+        var concerts = await _service.GetUpcomingAsync(userEmail);
 
         return Ok(Result<IEnumerable<ConcertDto>>.Ok(concerts));
     }
    
     [HttpGet("Past")]
-    public async Task<IActionResult> GetAllPastAsync()
+    public async Task<IActionResult> GetPast()
     {
-        var concerts = await _service.GetAllConcertsPastAsync();
+        userEmail = User.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty;
+
+        var concerts = await _service.GetPastAsync(userEmail);
 
         return Ok(Result<IEnumerable<ConcertDto>>.Ok(concerts));
     }
@@ -65,9 +75,11 @@ public class ConcertsController : Controller
     }
    
     [HttpPut]
-    public async Task<IActionResult> Update([FromBody] ConcertUpdateDto concertUpdateDto)
+    public async Task<IActionResult> Put([FromBody] ConcertUpdateDto concertUpdateDto)
     {
-        var updatedConcert = await _service.UpdateAsync(concertUpdateDto);
+        userEmail = User.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty;
+
+        var updatedConcert = await _service.PutAsync(concertUpdateDto, userEmail);
 
         if (updatedConcert == null)
             return NotFound(Result<object>.Failure("Concert not found for update."));
@@ -76,7 +88,7 @@ public class ConcertsController : Controller
     }
     
     [HttpDelete("{guid:guid}")]
-    public async Task<IActionResult> DeleteConcert(Guid guid)
+    public async Task<IActionResult> Delete(Guid guid)
     {
         var deletedConcert = await _service.DeleteAsync(guid);
 

@@ -19,6 +19,7 @@ public class CollectionProfile : Profile
                             src.Guid,
                             src.Artist,
                             src.Venue,
+                            src.ShowDate,
                             src.ShowDate.ToString(
                                 "dd 'de' MMMM 'de' yyyy",
                                 new CultureInfo("pt-BR")

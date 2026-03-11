@@ -12,7 +12,7 @@ public class VinylEFRepository : IVinylEFRepository
         _context = context;
     }
 
-    public async Task<Vinyl> CreateAsync(Vinyl obj)
+    public async Task<Vinyl> PostAsync(Vinyl obj)
     {
         await _context.vinyls.AddAsync(obj);
 
@@ -30,7 +30,7 @@ public class VinylEFRepository : IVinylEFRepository
         return deleted > 0;
     }
 
-    public async Task<Vinyl> UpdateAsync(Vinyl obj)
+    public async Task<Vinyl> PutAsync(Vinyl obj)
     {
         _context.vinyls.Update(obj);
 

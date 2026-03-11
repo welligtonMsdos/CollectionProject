@@ -96,7 +96,7 @@ public class VinylServiceTests
             new VinylDto(Guid.NewGuid(), "The Beatles", "Abbey Road", 1969, "https://example.com/abbeyroad.jpg", 150)
         };
 
-        _dapperRepositoy.Setup(r => r.GetAllAsync())
+        _dapperRepositoy.Setup(r => r.GetAllAsync(""))
                         .ReturnsAsync(vinyls.Select(v => new Vinyl
                         {
                             Guid = v.Guid,
@@ -107,11 +107,11 @@ public class VinylServiceTests
                             Price = v.Price
                         }).ToList());
 
-        var result = await _service.GetAllAsync();
+        var result = await _service.GetAllAsync("");
 
         result.Should().BeEquivalentTo(vinyls);
 
-        _dapperRepositoy.Verify(r => r.GetAllAsync(), Times.Once);
+        _dapperRepositoy.Verify(r => r.GetAllAsync(""), Times.Once);
     }
 
     [Fact]
