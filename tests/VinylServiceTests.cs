@@ -49,10 +49,10 @@ public class VinylServiceTests
                                      "https://example.com/thewall.jpg",
                                      200);
 
-        await _service.CreateAsync(dto);
+        await _service.PostAsync(dto);
 
         _efRepository.Verify(
-            r => r.CreateAsync(It.Is<Vinyl>(v =>
+            r => r.PostAsync(It.Is<Vinyl>(v =>
                 v.Artist == dto.Artist &&
                 v.Album == dto.Album &&
                 v.Year == dto.Year &&
@@ -82,9 +82,9 @@ public class VinylServiceTests
                                      photo, 
                                      price);
       
-        await Assert.ThrowsAsync<ValidationException>(() => _service.CreateAsync(dto));
+        await Assert.ThrowsAsync<ValidationException>(() => _service.PostAsync(dto));
 
-        _efRepository.Verify(r => r.CreateAsync(It.IsAny<Vinyl>()), Times.Never);
+        _efRepository.Verify(r => r.PostAsync(It.IsAny<Vinyl>()), Times.Never);
     }
 
     [Fact]
@@ -96,7 +96,7 @@ public class VinylServiceTests
             new VinylDto(Guid.NewGuid(), "The Beatles", "Abbey Road", 1969, "https://example.com/abbeyroad.jpg", 150)
         };
 
-        _dapperRepositoy.Setup(r => r.GetAllAsync(""))
+        _dapperRepositoy.Setup(r => r.GetAsync(""))
                         .ReturnsAsync(vinyls.Select(v => new Vinyl
                         {
                             Guid = v.Guid,
@@ -107,11 +107,11 @@ public class VinylServiceTests
                             Price = v.Price
                         }).ToList());
 
-        var result = await _service.GetAllAsync("");
+        var result = await _service.GetAsync("");
 
         result.Should().BeEquivalentTo(vinyls);
 
-        _dapperRepositoy.Verify(r => r.GetAllAsync(""), Times.Once);
+        _dapperRepositoy.Verify(r => r.GetAsync(""), Times.Once);
     }
 
     [Fact]
@@ -180,10 +180,10 @@ public class VinylServiceTests
                                      "https://example.com/thewall.jpg",
                                      250);
 
-        await _service.UpdateAsync(dto);
+        await _service.PutAsync(dto);
 
         _efRepository.Verify(
-            r => r.UpdateAsync(It.Is<Vinyl>(v =>
+            r => r.PutAsync(It.Is<Vinyl>(v =>
                 v.Guid == dto.Guid &&
                 v.Artist == dto.Artist &&
                 v.Album == dto.Album &&
