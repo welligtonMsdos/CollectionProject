@@ -68,20 +68,20 @@ public class ConcertsController : Controller
     {
         var concert = await _service.GetByGuidAsync(guid);
 
-        if (concert == null)
+        if (concert is null)
             return NotFound(Result<object>.Failure("Concert not found."));
 
         return Ok(Result<ConcertDto>.Ok(concert));
     }
    
-    [HttpPut]
-    public async Task<IActionResult> Put([FromBody] ConcertUpdateDto concertUpdateDto)
+    [HttpPut("{guid:guid}")]
+    public async Task<IActionResult> Put(Guid guid, [FromBody] ConcertUpdateDto concertUpdateDto)
     {
         userEmail = User.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty;
 
-        var updatedConcert = await _service.PutAsync(concertUpdateDto, userEmail);
+        var updatedConcert = await _service.PutAsync(guid, concertUpdateDto, userEmail);
 
-        if (updatedConcert == null)
+        if (updatedConcert is null)
             return NotFound(Result<object>.Failure("Concert not found for update."));
 
         return Ok(Result<ConcertDto>.Ok(updatedConcert, "Concert successfully updated!"));

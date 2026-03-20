@@ -7,10 +7,6 @@ public class ConcertUpdateValidator : AbstractValidator<ConcertUpdateDto>
 {
     public ConcertUpdateValidator()
     {
-        RuleFor(x => x.Guid)
-            .NotEmpty()
-            .WithMessage("Id is required");
-
         RuleFor(x => x.Artist)
          .NotEmpty().WithMessage("Artist is required")
          .MinimumLength(3).WithMessage("Artist must be at least 3 characters")

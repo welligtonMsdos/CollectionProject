@@ -1,9 +1,7 @@
-﻿using AutoMapper;
-using Collection10Api.src.Application.Dtos.Concert;
+﻿using Collection10Api.src.Application.Dtos.Concert;
 using Collection10Api.src.Application.Services;
 using Collection10Api.src.Application.Validators.Concert;
 using Collection10Api.src.Domain.Entities;
-using Collection10Api.src.Infrastructure.Profiles;
 using Collection10Api.src.Infrastructure.Repositories.ConcertRepo;
 using FluentAssertions;
 using FluentValidation;
@@ -16,8 +14,7 @@ public class ConcertServiceTests
 {
     private readonly Mock<IConcertDapperRepository> _dapperRepositoy;
     private readonly Mock<IConcertEFRepository> _efRepository;
-    private readonly ConcertService _service;
-    private readonly IValidator<ConcertCreateDto> _validator;
+    private readonly ConcertService _service;   
     private readonly string _email = "test@gmail.com";
     private readonly DateOnly _date = DateOnly.Parse(DateTime.Now.AddDays(30).ToShortDateString());
     private readonly DateOnly _pastDate = DateOnly.Parse(DateTime.Now.AddDays(-30).ToShortDateString());
@@ -31,18 +28,11 @@ public class ConcertServiceTests
         _efRepository = new Mock<IConcertEFRepository>();
 
         var validatorCreate = new ConcertCreateValidator();
-        var validatorUpdate = new ConcertUpdateValidator();
 
-        var mapperConfig = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile<CollectionProfile>();
-        });
-
-        var mapper = mapperConfig.CreateMapper();
+        var validatorUpdate = new ConcertUpdateValidator();        
 
         _service = new ConcertService(_dapperRepositoy.Object,
-                                      _efRepository.Object,
-                                      mapper,
+                                      _efRepository.Object,                                      
                                       validatorCreate,
                                       validatorUpdate);
     }
@@ -55,18 +45,35 @@ public class ConcertServiceTests
                                        _date,
                                        "https://example.com/thewalltour.jpg");       
 
-        await _service.PostAsync(dto, _email);
+        var expectedEntity = new Concert
+        {           
+            Artist = dto.Artist,
+            Venue = dto.Venue,
+            ShowDate = dto.ShowDate,
+            Photo = dto.Photo,
+            Active = true,
+            Email = _email
+        };
+
+        _efRepository
+             .Setup(r => r.PostAsync(It.IsAny<Concert>()))
+             .ReturnsAsync(expectedEntity);
+
+        var result = await _service.PostAsync(dto, _email);
+
+        Assert.NotNull(result);
 
         _efRepository.Verify(
-            r => r.PostAsync(It.Is<Concert>(c =>
-                c.Artist == dto.Artist &&
-                c.Venue == dto.Venue &&
-                c.ShowDate == dto.ShowDate &&
-                c.Photo == dto.Photo &&
-                c.Active == true
+            r => r.PostAsync(It.Is<Concert>(v =>               
+                v.Artist == dto.Artist &&
+                v.Venue == dto.Venue &&
+                v.ShowDate == dto.ShowDate &&
+                v.Photo == dto.Photo &&
+                v.Active == true &&
+                v.Email == _email
             )),
             Times.Once
-            );
+        );
     }
 
     [Theory]
@@ -252,23 +259,40 @@ public class ConcertServiceTests
     [Fact]
     public async Task PutConcertAsync_ShouldPutConcert()
     {
-        var dto = new ConcertUpdateDto(Guid.NewGuid(),
-                                       "Pink Floyd",
+        var dto = new ConcertUpdateDto("Pink Floyd",
                                        "The Wall Tour",
                                        _date,
-                                       "https://example.com/thewalltour.jpg");     
+                                       "https://example.com/thewalltour.jpg");
 
-        await _service.PutAsync(dto, _email);
+        Guid guid = Guid.NewGuid();
+
+        var existingVinyl = new Concert
+        {
+            Guid = guid,
+            Artist = "Pink Floyd",
+            Venue = "The Wall Tour",
+            ShowDate = _date,
+            Photo = "https://example.com/thewalltour.jpg",
+            Active = true,
+            Email = _email
+        };
+
+        _dapperRepositoy.Setup(r => r.GetByGuidAsync(guid))
+               .ReturnsAsync(existingVinyl);
+
+        await _service.PutAsync(guid, dto, _email);
 
         _efRepository.Verify(
-            r => r.PutAsync(It.Is<Concert>(c =>
-                c.Guid == dto.Guid &&
-                c.Artist == dto.Artist &&
-                c.Venue == dto.Venue &&
-                c.ShowDate == dto.ShowDate &&
-                c.Photo == dto.Photo
-            )),
-            Times.Once
-            );
+        r => r.PutAsync(It.Is<Concert>(v =>
+            v.Guid == guid &&
+            v.Artist == dto.Artist &&
+            v.Venue == dto.Venue &&
+            v.ShowDate == dto.ShowDate &&
+            v.Photo == dto.Photo &&
+            v.Active == true &&
+            v.Email == _email
+        )),
+        Times.Once
+    );
     }   
 }

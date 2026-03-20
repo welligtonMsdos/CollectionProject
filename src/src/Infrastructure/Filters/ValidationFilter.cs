@@ -15,17 +15,20 @@ public class ValidationFilter : IAsyncActionFilter
     }
 
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
-    {        
-        var dto = context.ActionArguments.Values.FirstOrDefault();
+    {       
+        var dto = context.ActionArguments.Values
+            .FirstOrDefault(v => v != null && !v.GetType().IsValueType);
 
         if (dto != null)
-        {           
+        {
             var validatorType = typeof(IValidator<>).MakeGenericType(dto.GetType());
+
             var validator = _serviceProvider.GetService(validatorType) as IValidator;
 
             if (validator != null)
             {
                 var validationContext = new ValidationContext<object>(dto);
+
                 var validationResult = await validator.ValidateAsync(validationContext);
 
                 if (!validationResult.IsValid)
@@ -36,11 +39,18 @@ public class ValidationFilter : IAsyncActionFilter
                             g => g.Key,
                             g => g.Select(e => e.ErrorMessage).ToArray()
                         );
-
+                    
                     context.Result = new BadRequestObjectResult(Result<object>.Failure(errors));
+
                     return;
                 }
             }
+        }
+        else if (context.ActionArguments.Any(x => x.Value == null))
+        {           
+            context.Result = new BadRequestObjectResult(Result<object>.Failure("O corpo da requisição não pode ser vazio."));
+
+            return;
         }
 
         await next();

@@ -7,10 +7,6 @@ public class VinylUpdateValidator : AbstractValidator<VinylUpdateDto>
 {
     public VinylUpdateValidator()
     {
-        RuleFor(x => x.Guid)
-            .NotEmpty()
-            .WithMessage("Guid is required");
-
         RuleFor(x => x.Artist)
          .NotEmpty().WithMessage("Artist is required")
          .MinimumLength(3).WithMessage("Artist must be at least 3 characters")

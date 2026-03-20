@@ -10,5 +10,5 @@ public interface IConcertService : IService<ConcertDto>
 
     Task<ConcertDto> PostAsync(ConcertCreateDto dto, string email);
 
-    Task<ConcertDto> PutAsync(ConcertUpdateDto dto, string email);
+    Task<ConcertDto> PutAsync(Guid guid, ConcertUpdateDto dto, string email);
 }

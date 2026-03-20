@@ -6,5 +6,5 @@ public interface IVinylService: IService<VinylDto>
 {
     Task<VinylDto> PostAsync(VinylCreateDto dto);
 
-    Task<VinylDto> PutAsync(VinylUpdateDto dto);
+    Task<VinylDto> PutAsync(Guid guid, VinylUpdateDto dto);
 }
