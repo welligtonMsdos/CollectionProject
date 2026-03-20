@@ -1,9 +1,8 @@
-﻿using AutoMapper;
-using Collection10Api.src.Application.Dtos.Vinyl;
+﻿using Collection10Api.src.Application.Dtos.Vinyl;
 using Collection10Api.src.Application.Services;
+using Collection10Api.src.Application.Validators.Vinil;
 using Collection10Api.src.Application.Validators.Vinyl;
 using Collection10Api.src.Domain.Entities;
-using Collection10Api.src.Infrastructure.Profiles;
 using Collection10Api.src.Infrastructure.Repositories.VinylRepo;
 using FluentAssertions;
 using FluentValidation;
@@ -15,8 +14,7 @@ public class VinylServiceTests
 {
     private readonly Mock<IVinylDapperRepository> _dapperRepositoy;
     private readonly Mock<IVinylEFRepository> _efRepository;    
-    private readonly VinylService _service;
-    private readonly IValidator<VinylCreateDto> _validator;
+    private readonly VinylService _service;   
 
     public VinylServiceTests()
     {
@@ -24,19 +22,14 @@ public class VinylServiceTests
 
         _efRepository = new Mock<IVinylEFRepository>();
 
-        var validator = new VinylCreateValidator();
+        var validatorCreate = new VinylCreateValidator();
 
-        var mapperConfig = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile<CollectionProfile>();
-        });
-
-        var mapper = mapperConfig.CreateMapper();
+        var validatorUpdate = new VinylUpdateValidator();
 
         _service = new VinylService(_dapperRepositoy.Object, 
-                                    _efRepository.Object, 
-                                    mapper, 
-                                    validator);
+                                    _efRepository.Object,
+                                    validatorCreate,
+                                    validatorUpdate);
     }
 
 
@@ -49,19 +42,31 @@ public class VinylServiceTests
                                      "https://example.com/thewall.jpg",
                                      200);
 
-        await _service.CreateAsync(dto);
+        var expectedEntity = new Vinyl
+        {
+            Artist = dto.Artist,
+            Album = dto.Album,
+            Year = dto.Year,
+            Photo = dto.Photo,
+            Price = dto.Price
+        };
+
+        _efRepository
+            .Setup(r => r.PostAsync(It.IsAny<Vinyl>()))
+            .ReturnsAsync(expectedEntity);
+
+        var result = await _service.PostAsync(dto);
+
+        Assert.NotNull(result);
 
         _efRepository.Verify(
-            r => r.CreateAsync(It.Is<Vinyl>(v =>
+            r => r.PostAsync(It.Is<Vinyl>(v =>
                 v.Artist == dto.Artist &&
                 v.Album == dto.Album &&
-                v.Year == dto.Year &&
-                v.Photo == dto.Photo &&
-                v.Price == dto.Price &&
                 v.Active == true
             )),
             Times.Once
-            );
+        );
     }
 
     [Theory]
@@ -82,9 +87,9 @@ public class VinylServiceTests
                                      photo, 
                                      price);
       
-        await Assert.ThrowsAsync<ValidationException>(() => _service.CreateAsync(dto));
+        await Assert.ThrowsAsync<ValidationException>(() => _service.PostAsync(dto));
 
-        _efRepository.Verify(r => r.CreateAsync(It.IsAny<Vinyl>()), Times.Never);
+        _efRepository.Verify(r => r.PostAsync(It.IsAny<Vinyl>()), Times.Never);
     }
 
     [Fact]
@@ -96,7 +101,7 @@ public class VinylServiceTests
             new VinylDto(Guid.NewGuid(), "The Beatles", "Abbey Road", 1969, "https://example.com/abbeyroad.jpg", 150)
         };
 
-        _dapperRepositoy.Setup(r => r.GetAllAsync(""))
+        _dapperRepositoy.Setup(r => r.GetAsync(""))
                         .ReturnsAsync(vinyls.Select(v => new Vinyl
                         {
                             Guid = v.Guid,
@@ -107,11 +112,11 @@ public class VinylServiceTests
                             Price = v.Price
                         }).ToList());
 
-        var result = await _service.GetAllAsync("");
+        var result = await _service.GetAsync("");
 
         result.Should().BeEquivalentTo(vinyls);
 
-        _dapperRepositoy.Verify(r => r.GetAllAsync(""), Times.Once);
+        _dapperRepositoy.Verify(r => r.GetAsync(""), Times.Once);
     }
 
     [Fact]
@@ -173,25 +178,38 @@ public class VinylServiceTests
     [Fact]
     public async Task UpdateVinylAsync_ShouldUpdateVinyl()
     {
-        var dto = new VinylUpdateDto(Guid.NewGuid(),
-                                     "Pink Floyd",
+        var dto = new VinylUpdateDto("Pink Floyd",
                                      "The Wall",
                                      1979,
                                      "https://example.com/thewall.jpg",
                                      250);
 
-        await _service.UpdateAsync(dto);
+        Guid guid = Guid.NewGuid();
+
+        var existingVinyl = new Vinyl { 
+            Guid = guid,
+            Artist = "Pink Floyd",
+            Album = "The Wall",
+            Year = 1979,
+            Photo = "https://example.com/thewall.jpg",
+            Price = 250
+        };
+
+        _dapperRepositoy.Setup(r => r.GetByGuidAsync(guid))
+               .ReturnsAsync(existingVinyl);
+
+        await _service.PutAsync(guid, dto);
 
         _efRepository.Verify(
-            r => r.UpdateAsync(It.Is<Vinyl>(v =>
-                v.Guid == dto.Guid &&
-                v.Artist == dto.Artist &&
-                v.Album == dto.Album &&
-                v.Year == dto.Year &&
-                v.Photo == dto.Photo &&
-                v.Price == dto.Price
-            )),
-            Times.Once
-            );
+        r => r.PutAsync(It.Is<Vinyl>(v =>
+            v.Guid == guid &&
+            v.Artist == dto.Artist &&
+            v.Album == dto.Album &&
+            v.Year == dto.Year &&
+            v.Photo == dto.Photo &&
+            v.Price == dto.Price
+        )),
+        Times.Once
+    );
     }
 }

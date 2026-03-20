@@ -41,18 +41,18 @@ public class VinylsController : ControllerBase
     {
         var vinyl = await _service.GetByGuidAsync(guid);
 
-        if (vinyl == null)
+        if (vinyl is null)
             return NotFound(Result<object>.Failure("Vinyl not found."));
 
         return Ok(Result<VinylDto>.Ok(vinyl));
     }
     
-    [HttpPut]
-    public async Task<IActionResult> Put([FromBody] VinylUpdateDto vinylUpdateDto)
+    [HttpPut("{guid:guid}")]
+    public async Task<IActionResult> Put(Guid guid, [FromBody] VinylUpdateDto vinylUpdateDto)
     {
-        var updatedVinyl = await _service.PutAsync(vinylUpdateDto);
+        var updatedVinyl = await _service.PutAsync(guid, vinylUpdateDto);
 
-        if (updatedVinyl == null)
+        if (updatedVinyl is null)
             return NotFound(Result<object>.Failure("Vinyl not found for update."));
 
         return Ok(Result<VinylDto>.Ok(updatedVinyl, "Vinyl successfully updated!"));
