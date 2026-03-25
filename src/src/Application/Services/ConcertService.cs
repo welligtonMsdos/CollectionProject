@@ -26,7 +26,7 @@ public class ConcertService : IConcertService
     }
 
     public async Task<ConcertDto> PostAsync(ConcertCreateDto concertCreateDto, 
-                                            string email)
+                                            string userId)
     {
         await _validatorCreate.ValidateAndThrowAsync(concertCreateDto);
 
@@ -34,34 +34,34 @@ public class ConcertService : IConcertService
 
         concert.Active = true;
 
-        concert.Email = email;
+        concert.UserId = userId;
 
         var createdConcert = await _efRepository.PostAsync(concert);
 
         return createdConcert.ToConcertDto();
     }
 
-    public async Task<ICollection<ConcertDto>> GetAsync(string email)
+    public async Task<ICollection<ConcertDto>> GetAsync(string userId)
     {
-        var concerts = await _repository.GetAsync(email);
+        var concerts = await _repository.GetAsync(userId);
 
         ArgumentNullException.ThrowIfNull(concerts);
 
         return concerts.Select(c => c.ToConcertDto()).ToList();
     }
 
-    public async Task<ICollection<ConcertDto>> GetUpcomingAsync(string email)
+    public async Task<ICollection<ConcertDto>> GetUpcomingAsync(string userId)
     {
-        var concerts = await _repository.GetUpcomingAsync(email);
+        var concerts = await _repository.GetUpcomingAsync(userId);
 
         ArgumentNullException.ThrowIfNull(concerts);
 
         return concerts.Select(c => c.ToConcertDto()).ToList();
     }
 
-    public async Task<ICollection<ConcertDto>> GetPastAsync(string email)
+    public async Task<ICollection<ConcertDto>> GetPastAsync(string userId)
     {
-        var concerts = await _repository.GetPastAsync(email);
+        var concerts = await _repository.GetPastAsync(userId);
 
         ArgumentNullException.ThrowIfNull(concerts);
 
@@ -79,7 +79,7 @@ public class ConcertService : IConcertService
 
     public async Task<ConcertDto> PutAsync(Guid guid, 
                                            ConcertUpdateDto concertUpdateDto,
-                                           string email)
+                                           string userId)
     {
         await _validatorUpdate.ValidateAndThrowAsync(concertUpdateDto);
 
@@ -91,7 +91,7 @@ public class ConcertService : IConcertService
 
         concert.Active = true;
 
-        concert.Email = email;
+        concert.UserId = userId;
 
         await _efRepository.PutAsync(concert);
 

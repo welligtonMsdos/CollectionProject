@@ -26,22 +26,24 @@ public class VinylService : IVinylService
         _validatorUpdate = validatorUpdate;
     }
 
-    public async Task<VinylDto> PostAsync(VinylCreateDto vinylCreateDto)
+    public async Task<VinylDto> PostAsync(VinylCreateDto vinylCreateDto, string userId)
     {
         await _validatorCreate.ValidateAndThrowAsync(vinylCreateDto);
 
         var vinyl = vinylCreateDto.ToEntity();        
 
-        vinyl.Active = true;       
+        vinyl.Active = true;
+
+        vinyl.UserId = userId;
 
         var createdVinyl = await _efRepository.PostAsync(vinyl);
 
         return createdVinyl.ToVinylDto();
     }   
 
-    public async Task<ICollection<VinylDto>> GetAsync(string email)
+    public async Task<ICollection<VinylDto>> GetAsync(string userId)
     {
-       var vinyls = await _repository.GetAsync(email);
+       var vinyls = await _repository.GetAsync(userId);
 
         ArgumentNullException.ThrowIfNull(vinyls);
 
@@ -57,7 +59,9 @@ public class VinylService : IVinylService
         return vinyl.ToVinylDto();
     }
 
-    public async Task<VinylDto> PutAsync(Guid guid, VinylUpdateDto vinylUpdateDto)
+    public async Task<VinylDto> PutAsync(Guid guid, 
+                                         VinylUpdateDto vinylUpdateDto,
+                                         string userId)
     {
         await _validatorUpdate.ValidateAndThrowAsync(vinylUpdateDto);
 
@@ -66,6 +70,10 @@ public class VinylService : IVinylService
         ArgumentNullException.ThrowIfNull(vinyl);
 
         vinyl.UpdateEntity(vinylUpdateDto);
+
+        vinyl.Active = true;
+
+        vinyl.UserId = userId;
 
         await _efRepository.PutAsync(vinyl);
 

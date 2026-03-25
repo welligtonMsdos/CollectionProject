@@ -4,7 +4,7 @@ namespace Collection10Api.src.Application.Interfaces;
 
 public interface IVinylService: IService<VinylDto>
 {
-    Task<VinylDto> PostAsync(VinylCreateDto dto);
+    Task<VinylDto> PostAsync(VinylCreateDto vinylCreateDto, string userId);
 
-    Task<VinylDto> PutAsync(Guid guid, VinylUpdateDto dto);
+    Task<VinylDto> PutAsync(Guid guid, VinylUpdateDto vinylUpdateDto, string userId);
 }

@@ -8,5 +8,5 @@ public class Concert
     public DateOnly ShowDate { get; set; }
     public required string Photo { get; set; }
     public bool Active { get; set; }
-    public required string Email { get; set; }
+    public required string UserId { get; set; }
 }

@@ -9,4 +9,5 @@ public class Vinyl
     public required string Photo { get; set; }
     public decimal Price { get; set; }
     public bool Active { get; set; }
+    public required string UserId { get; set; }
 }

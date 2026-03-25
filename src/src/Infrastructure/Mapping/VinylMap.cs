@@ -31,6 +31,10 @@ public class VinylMap : IEntityTypeConfiguration<Vinyl>
             .IsRequired()
             .HasColumnType("decimal(10,2)");
 
+        builder.Property(s => s.UserId)
+            .IsRequired()
+            .HasMaxLength(50);
+
         builder.HasQueryFilter(p => p.Active);
     }
 }

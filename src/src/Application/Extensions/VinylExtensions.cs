@@ -29,7 +29,8 @@ public static class VinylExtensions
             Album = vinylCreateDto.Album,
             Year = vinylCreateDto.Year,
             Photo = vinylCreateDto.Photo,
-            Price = vinylCreateDto.Price
+            Price = vinylCreateDto.Price,
+            UserId = string.Empty
         };
     }
 
