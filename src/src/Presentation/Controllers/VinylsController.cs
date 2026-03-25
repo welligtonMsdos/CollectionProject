@@ -6,10 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Collection10Api.src.Presentation.Controllers;
 
-[ApiController]
 [Authorize]
 [Route("api/[controller]")]
-public class VinylsController : ControllerBase
+public class VinylsController : ApiControllerBase
 {
     private readonly IVinylService _service;
     
@@ -21,7 +20,7 @@ public class VinylsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] VinylCreateDto vinylCreateDto)
     {       
-        var result = await _service.PostAsync(vinylCreateDto);
+        var result = await _service.PostAsync(vinylCreateDto, UserId);
 
         return CreatedAtAction(nameof(GetByGuid), 
                                new { guid = result.Guid }, 
@@ -31,7 +30,7 @@ public class VinylsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var vinyls = await _service.GetAsync("");
+        var vinyls = await _service.GetAsync(UserId);
 
         return Ok(Result<IEnumerable<VinylDto>>.Ok(vinyls));
     }
@@ -50,7 +49,9 @@ public class VinylsController : ControllerBase
     [HttpPut("{guid:guid}")]
     public async Task<IActionResult> Put(Guid guid, [FromBody] VinylUpdateDto vinylUpdateDto)
     {
-        var updatedVinyl = await _service.PutAsync(guid, vinylUpdateDto);
+        var updatedVinyl = await _service.PutAsync(guid, 
+                                                   vinylUpdateDto, 
+                                                   UserId);
 
         if (updatedVinyl is null)
             return NotFound(Result<object>.Failure("Vinyl not found for update."));

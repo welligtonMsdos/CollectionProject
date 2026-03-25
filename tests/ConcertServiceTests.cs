@@ -15,7 +15,7 @@ public class ConcertServiceTests
     private readonly Mock<IConcertDapperRepository> _dapperRepositoy;
     private readonly Mock<IConcertEFRepository> _efRepository;
     private readonly ConcertService _service;   
-    private readonly string _email = "test@gmail.com";
+    private readonly string _userId = "69336cc7a64833ba82d74876";
     private readonly DateOnly _date = DateOnly.Parse(DateTime.Now.AddDays(30).ToShortDateString());
     private readonly DateOnly _pastDate = DateOnly.Parse(DateTime.Now.AddDays(-30).ToShortDateString());
     private readonly string _dateString = DateTime.Now.AddDays(30).ToString("dd 'de' MMMM 'de' yyyy", new CultureInfo("pt-BR"));
@@ -52,14 +52,14 @@ public class ConcertServiceTests
             ShowDate = dto.ShowDate,
             Photo = dto.Photo,
             Active = true,
-            Email = _email
+            UserId = _userId
         };
 
         _efRepository
              .Setup(r => r.PostAsync(It.IsAny<Concert>()))
              .ReturnsAsync(expectedEntity);
 
-        var result = await _service.PostAsync(dto, _email);
+        var result = await _service.PostAsync(dto, _userId);
 
         Assert.NotNull(result);
 
@@ -70,7 +70,7 @@ public class ConcertServiceTests
                 v.ShowDate == dto.ShowDate &&
                 v.Photo == dto.Photo &&
                 v.Active == true &&
-                v.Email == _email
+                v.UserId == _userId
             )),
             Times.Once
         );
@@ -91,7 +91,7 @@ public class ConcertServiceTests
                                        DateOnly.Parse(showDate),
                                        photo);       
 
-        await Assert.ThrowsAsync<ValidationException>(() => _service.PostAsync(dto, _email));
+        await Assert.ThrowsAsync<ValidationException>(() => _service.PostAsync(dto, _userId));
 
         _efRepository.Verify(r => r.PostAsync(It.IsAny<Concert>()), Times.Never);
     }
@@ -115,7 +115,7 @@ public class ConcertServiceTests
                            "https://example.com/abbeyroadlive.jpg")
         };       
 
-        _dapperRepositoy.Setup(r => r.GetAsync(_email))
+        _dapperRepositoy.Setup(r => r.GetAsync(_userId))
                         .ReturnsAsync(concerts.Select(c => new Concert
                         {
                             Guid = c.Guid,
@@ -124,14 +124,14 @@ public class ConcertServiceTests
                             ShowDate = c.ShowDate,
                             Photo = c.Photo,
                             Active = true,
-                            Email = _email
+                            UserId = _userId
                         }).ToList());
 
-        var result = await _service.GetAsync(_email);
+        var result = await _service.GetAsync(_userId);
 
         result.Should().BeEquivalentTo(concerts);
         
-        _dapperRepositoy.Verify(r => r.GetAsync(_email), Times.Once);
+        _dapperRepositoy.Verify(r => r.GetAsync(_userId), Times.Once);
     }
 
     [Fact]
@@ -153,7 +153,7 @@ public class ConcertServiceTests
                             ShowDate = concert.ShowDate,
                             Photo = concert.Photo,
                             Active = true,
-                            Email = _email
+                            UserId = _userId
                         });
 
         var result = await _service.GetByGuidAsync(concert.Guid);
@@ -176,7 +176,7 @@ public class ConcertServiceTests
                            "https://example.com/thewalltour.jpg")
         };
       
-        _dapperRepositoy.Setup(r => r.GetPastAsync(_email))
+        _dapperRepositoy.Setup(r => r.GetPastAsync(_userId))
                         .ReturnsAsync(concerts.Select(c => new Concert
                         {
                             Guid = c.Guid,
@@ -185,14 +185,14 @@ public class ConcertServiceTests
                             ShowDate = c.ShowDate,
                             Photo = c.Photo,
                             Active = true,
-                            Email = _email
+                            UserId = _userId
                         }).ToList());
 
-        var result = await _service.GetPastAsync(_email);
+        var result = await _service.GetPastAsync(_userId);
 
         result.Should().BeEquivalentTo(concerts);
 
-        _dapperRepositoy.Verify(r => r.GetPastAsync(_email), Times.Once);
+        _dapperRepositoy.Verify(r => r.GetPastAsync(_userId), Times.Once);
     }
 
     [Fact]
@@ -217,7 +217,7 @@ public class ConcertServiceTests
                             ShowDate = c.ShowDate,
                             Photo = c.Photo,
                             Active = true,
-                            Email = email
+                            UserId = _userId
                         }).ToList());
 
         var result = await _service.GetUpcomingAsync(email);
@@ -241,7 +241,7 @@ public class ConcertServiceTests
                             ShowDate = _date,
                             Photo = "https://example.com/thewalltour.jpg",
                             Active = true,
-                            Email = _email
+                            UserId = _userId
                         });
 
         _efRepository.Setup(r => r.DeleteAsync(It.IsAny<Concert>()))
@@ -274,13 +274,13 @@ public class ConcertServiceTests
             ShowDate = _date,
             Photo = "https://example.com/thewalltour.jpg",
             Active = true,
-            Email = _email
+            UserId = _userId
         };
 
         _dapperRepositoy.Setup(r => r.GetByGuidAsync(guid))
                .ReturnsAsync(existingVinyl);
 
-        await _service.PutAsync(guid, dto, _email);
+        await _service.PutAsync(guid, dto, _userId);
 
         _efRepository.Verify(
         r => r.PutAsync(It.Is<Concert>(v =>
@@ -290,7 +290,7 @@ public class ConcertServiceTests
             v.ShowDate == dto.ShowDate &&
             v.Photo == dto.Photo &&
             v.Active == true &&
-            v.Email == _email
+            v.UserId == _userId
         )),
         Times.Once
     );

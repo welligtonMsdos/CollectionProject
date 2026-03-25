@@ -38,7 +38,7 @@ public static class ConcertExtensions
             Venue = concertCreateDto.Venue,
             ShowDate = concertCreateDto.ShowDate,
             Photo = concertCreateDto.Photo,
-            Email = string.Empty
+            UserId = string.Empty,
         };
     }
 
