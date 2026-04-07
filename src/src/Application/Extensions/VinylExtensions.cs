@@ -20,6 +20,16 @@ public static class VinylExtensions
         );
     }
 
+    public static VinylByComboDto ToVinylByComboDto(this Vinyl vinyl)
+    {
+        ArgumentNullException.ThrowIfNull(vinyl);
+        return new VinylByComboDto
+        (
+            vinyl.Guid,
+            vinyl.Artist            
+        );
+    }
+
     public static Vinyl ToEntity(this VinylCreateDto vinylCreateDto)
     {
         ArgumentNullException.ThrowIfNull(vinylCreateDto);

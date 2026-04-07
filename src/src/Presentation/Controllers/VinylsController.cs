@@ -34,7 +34,15 @@ public class VinylsController : ApiControllerBase
 
         return Ok(Result<IEnumerable<VinylDto>>.Ok(vinyls));
     }
-   
+
+    [HttpGet("ByCombo")]
+    public async Task<IActionResult> GetByCombo()
+    {
+        var vinyls = await _service.GetByComboAsync(UserId);
+
+        return Ok(Result<IEnumerable<VinylByComboDto>>.Ok(vinyls));
+    }
+
     [HttpGet("{guid:guid}")]
     public async Task<IActionResult> GetByGuid(Guid guid)
     {

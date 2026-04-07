@@ -1,4 +1,5 @@
-﻿using Collection10Api.src.Domain.Entities;
+﻿using Collection10Api.src.Application.Dtos.Vinyl;
+using Collection10Api.src.Domain.Entities;
 using Dapper;
 
 namespace Collection10Api.src.Infrastructure.Repositories.VinylRepo;
@@ -17,6 +18,22 @@ public class VinylDapperRepository : BaseRepository, IVinylDapperRepository
                       ""UserId"" = @UserId
                       ORDER BY ""Year""";
 
+        return await connection.QueryAsync<Vinyl>(query, new { UserId = userId });
+    }
+
+    public async Task<IEnumerable<Vinyl>> GetByComboAsync(string userId)
+    {
+        using var connection = CreateConnection();
+
+        var query = @"
+                        SELECT DISTINCT ON (""Artist"") 
+                            ""Guid"", 
+                            ""Artist""
+                        FROM ""Vinyl""
+                        WHERE ""Active"" = TRUE AND 
+                              ""UserId"" = @UserId
+                        ORDER BY ""Artist"", ""Year"" DESC";
+        
         return await connection.QueryAsync<Vinyl>(query, new { UserId = userId });
     }
 

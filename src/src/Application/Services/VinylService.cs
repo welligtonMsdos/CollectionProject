@@ -88,4 +88,13 @@ public class VinylService : IVinylService
 
         return await _efRepository.DeleteAsync(vinylEntity);
     }
+
+    public async Task<IEnumerable<VinylByComboDto>> GetByComboAsync(string userId)
+    {
+        var vinyls = await _repository.GetByComboAsync(userId);
+
+        ArgumentNullException.ThrowIfNull(vinyls);
+
+        return vinyls.Select(v => v.ToVinylByComboDto()).ToList();
+    }
 }

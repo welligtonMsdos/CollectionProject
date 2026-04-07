@@ -3,5 +3,6 @@
 namespace Collection10Api.src.Infrastructure.Repositories.VinylRepo;
 
 public interface IVinylDapperRepository: IDapperRepository<Vinyl>
-{    
+{
+    Task<IEnumerable<Vinyl>> GetByComboAsync(string userId);
 }
